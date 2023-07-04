@@ -1,0 +1,301 @@
+"","company_name","longitude","latitude","fossil_fuel_type","extraction_or_processing","number_of_employees","previous_leaks_n"
+"1","Tinted",-72,35,"Natural gas","Extraction",9115,13
+"2","Cruxx",-98,43,"Oil","Extraction",3918,5
+"3","Bards and Tennets",-67,48,"Oil","Processing",8080,8
+"4","Reves ltd",-72,45,"Oil","Processing",6462,3
+"5","Xeros",-96,27,"Coal","Processing",287,13
+"6","Bards and Tennets",-115,31,"Oil","Extraction",5166,20
+"7","Tinted",-79,42,"Coal","Processing",9460,19
+"8","Xeros",-110,39,"Oil","Extraction",6035,3
+"9","Woodward",-81,37,"Coal","Extraction",1294,17
+"10","Woodward",-101,45,"Natural gas","Extraction",9314,9
+"11","Reves ltd",-66,33,"Natural gas","Extraction",5594,2
+"12","Unique Oil",-89,34,"Coal","Extraction",641,0
+"13","Reves ltd",-89,37,"Natural gas","Extraction",3110,6
+"14","BUB Energy",-120,36,"Oil","Processing",8153,7
+"15","Jeans and co",-71,40,"Natural gas","Processing",2575,14
+"16","Bards and Tennets",-71,31,"Coal","Processing",6189,10
+"17","Bards and Tennets",-115,41,"Natural gas","Processing",7304,12
+"18","Woodward",-89,44,"Oil","Extraction",3765,3
+"19","COYG",-86,44,"Coal","Extraction",4533,14
+"20","Xeros",-115,27,"Coal","Processing",1088,19
+"21","Jeans and co",-66,47,"Coal","Extraction",9364,18
+"22","Jeans and co",-80,32,"Coal","Extraction",6530,9
+"23","Seets Independent",-121,35,"Oil","Processing",493,16
+"24","Bards and Tennets",-89,37,"Natural gas","Extraction",7215,14
+"25","COYG",-74,32,"Natural gas","Extraction",448,2
+"26","LTF",-74,46,"Oil","Processing",9644,11
+"27","Devo Minds",-103,45,"Natural gas","Extraction",2128,8
+"28","Reves ltd",-66,34,"Oil","Extraction",7467,11
+"29","Devo Minds",-70,34,"Oil","Processing",5004,2
+"30","COYG",-100,31,"Oil","Processing",9346,2
+"31","BUB Energy",-95,44,"Oil","Processing",6642,2
+"32","COYG",-123,43,"Oil","Extraction",8725,9
+"33","COYG",-69,35,"Coal","Extraction",5040,20
+"34","Spyte",-120,36,"Natural gas","Processing",5592,20
+"35","Bards and Tennets",-119,28,"Oil","Processing",4347,5
+"36","Jeans and co",-109,37,"Oil","Extraction",1022,17
+"37","LTF",-76,33,"Natural gas","Extraction",8168,5
+"38","Cruxx",-68,28,"Coal","Processing",4527,18
+"39","Tinted",-102,44,"Oil","Extraction",4756,11
+"40","Unique Oil",-102,31,"Coal","Extraction",6812,7
+"41","Tinted",-67,39,"Oil","Extraction",9606,10
+"42","COYG",-120,36,"Oil","Extraction",9364,0
+"43","Tinted",-90,36,"Coal","Extraction",9990,12
+"44","Woodward",-121,42,"Natural gas","Extraction",9137,4
+"45","Cruxx",-82,30,"Coal","Processing",9170,18
+"46","Unique Oil",-73,32,"Coal","Processing",3753,5
+"47","Seets Independent",-92,43,"Coal","Extraction",7426,1
+"48","Unique Oil",-67,28,"Oil","Processing",3420,6
+"49","Woodward",-100,34,"Oil","Processing",4979,12
+"50","Bards and Tennets",-113,31,"Coal","Processing",2250,3
+"51","Seets Independent",-122,33,"Coal","Extraction",2395,5
+"52","LTF",-76,43,"Natural gas","Extraction",2974,20
+"53","Unique Oil",-95,32,"Coal","Processing",2873,9
+"54","Spyte",-117,43,"Coal","Extraction",2855,18
+"55","Seets Independent",-88,37,"Oil","Extraction",2183,14
+"56","LTF",-86,39,"Oil","Extraction",4909,12
+"57","Jeans and co",-68,33,"Oil","Extraction",8633,20
+"58","Reves ltd",-104,40,"Oil","Processing",9186,16
+"59","Woodward",-73,34,"Natural gas","Processing",9147,20
+"60","Unique Oil",-107,45,"Coal","Extraction",1811,3
+"61","COYG",-78,33,"Coal","Processing",9136,18
+"62","Tinted",-86,34,"Coal","Extraction",632,9
+"63","Xeros",-118,33,"Natural gas","Processing",7234,7
+"64","Leex",-86,42,"Oil","Extraction",6866,1
+"65","Unique Oil",-105,45,"Oil","Processing",1603,13
+"66","Woodward",-90,43,"Oil","Processing",8742,4
+"67","Xeros",-124,35,"Oil","Processing",5555,17
+"68","Unique Oil",-77,40,"Natural gas","Extraction",9140,15
+"69","Bards and Tennets",-121,40,"Natural gas","Extraction",5536,8
+"70","Jeans and co",-91,45,"Coal","Extraction",835,13
+"71","Xeros",-109,31,"Oil","Extraction",5036,13
+"72","Unique Oil",-101,38,"Oil","Extraction",7764,2
+"73","Cruxx",-72,41,"Natural gas","Processing",811,0
+"74","Jeans and co",-82,34,"Natural gas","Processing",5320,1
+"75","Leex",-102,35,"Coal","Extraction",548,15
+"76","Cruxx",-98,42,"Oil","Processing",2887,14
+"77","Spyte",-84,46,"Coal","Processing",494,12
+"78","Unique Oil",-122,42,"Natural gas","Processing",1398,14
+"79","Reves ltd",-70,38,"Coal","Extraction",8492,3
+"80","Spyte",-88,35,"Coal","Processing",3493,19
+"81","Jeans and co",-72,40,"Coal","Extraction",3807,9
+"82","Xeros",-103,43,"Coal","Extraction",622,9
+"83","Jeans and co",-84,45,"Natural gas","Extraction",9844,0
+"84","BUB Energy",-114,27,"Natural gas","Extraction",7512,20
+"85","Seets Independent",-97,42,"Coal","Extraction",3417,12
+"86","Reves ltd",-86,41,"Oil","Processing",9228,10
+"87","Unique Oil",-69,31,"Natural gas","Processing",852,0
+"88","Cruxx",-121,43,"Coal","Extraction",701,15
+"89","COYG",-89,46,"Oil","Extraction",8258,9
+"90","Cruxx",-90,29,"Coal","Extraction",372,6
+"91","Reves ltd",-82,45,"Natural gas","Processing",6977,5
+"92","Devo Minds",-121,47,"Oil","Processing",9458,11
+"93","Reves ltd",-121,27,"Coal","Extraction",3831,17
+"94","Jeans and co",-112,35,"Coal","Extraction",2535,6
+"95","Devo Minds",-115,37,"Coal","Extraction",387,10
+"96","Reves ltd",-73,28,"Coal","Extraction",382,17
+"97","Bards and Tennets",-78,40,"Coal","Processing",7133,16
+"98","Cruxx",-98,33,"Oil","Processing",6304,3
+"99","Bards and Tennets",-71,47,"Oil","Processing",3364,12
+"100","Spyte",-117,46,"Coal","Extraction",2915,3
+"101","Devo Minds",-107,35,"Coal","Processing",4090,19
+"102","LTF",-121,33,"Coal","Processing",8676,7
+"103","Devo Minds",-108,38,"Oil","Processing",1974,2
+"104","COYG",-91,48,"Natural gas","Processing",1831,13
+"105","Devo Minds",-101,34,"Coal","Processing",719,19
+"106","Xeros",-94,27,"Natural gas","Processing",4807,5
+"107","Spyte",-92,43,"Coal","Extraction",469,14
+"108","Woodward",-100,38,"Natural gas","Extraction",2272,20
+"109","Unique Oil",-68,47,"Natural gas","Processing",4779,18
+"110","Leex",-112,42,"Oil","Extraction",8926,13
+"111","Jeans and co",-108,38,"Coal","Processing",3884,11
+"112","Leex",-97,47,"Oil","Processing",7410,13
+"113","Leex",-109,48,"Oil","Extraction",5837,17
+"114","Tinted",-93,34,"Coal","Processing",6114,3
+"115","LTF",-106,45,"Coal","Extraction",6155,11
+"116","Tinted",-86,31,"Natural gas","Extraction",1323,14
+"117","Reves ltd",-95,32,"Oil","Extraction",1199,2
+"118","BUB Energy",-102,38,"Natural gas","Extraction",1228,19
+"119","Spyte",-113,40,"Natural gas","Processing",8781,6
+"120","Tinted",-79,48,"Coal","Processing",5335,17
+"121","Tinted",-82,46,"Coal","Processing",935,0
+"122","Woodward",-81,34,"Coal","Processing",3797,4
+"123","Tinted",-88,38,"Coal","Extraction",6278,1
+"124","BUB Energy",-109,30,"Oil","Extraction",5878,2
+"125","Xeros",-103,46,"Natural gas","Processing",7043,5
+"126","BUB Energy",-97,34,"Coal","Processing",7696,18
+"127","Spyte",-93,44,"Natural gas","Extraction",7123,20
+"128","Tinted",-85,37,"Natural gas","Extraction",3673,16
+"129","BUB Energy",-76,39,"Coal","Processing",5354,6
+"130","Leex",-76,46,"Oil","Extraction",6499,16
+"131","Woodward",-80,33,"Coal","Processing",9784,15
+"132","BUB Energy",-108,37,"Oil","Processing",2959,10
+"133","Woodward",-85,48,"Oil","Extraction",1200,10
+"134","Devo Minds",-75,36,"Coal","Extraction",6283,11
+"135","Cruxx",-109,39,"Coal","Extraction",6867,8
+"136","Jeans and co",-94,46,"Oil","Processing",8748,8
+"137","LTF",-81,45,"Oil","Processing",4047,0
+"138","Tinted",-111,47,"Coal","Processing",812,19
+"139","LTF",-92,35,"Natural gas","Processing",6820,19
+"140","LTF",-106,33,"Coal","Processing",1223,7
+"141","LTF",-93,27,"Oil","Extraction",6674,7
+"142","Woodward",-66,34,"Natural gas","Processing",6351,0
+"143","Unique Oil",-98,37,"Oil","Processing",1099,15
+"144","Woodward",-117,40,"Oil","Extraction",629,15
+"145","Jeans and co",-89,34,"Natural gas","Processing",6364,19
+"146","BUB Energy",-104,33,"Coal","Extraction",722,2
+"147","Tinted",-72,47,"Coal","Processing",5796,8
+"148","Seets Independent",-66,43,"Oil","Extraction",4241,0
+"149","LTF",-121,42,"Coal","Extraction",7229,16
+"150","Reves ltd",-68,45,"Coal","Extraction",3315,9
+"151","Xeros",-103,45,"Natural gas","Extraction",416,3
+"152","LTF",-121,38,"Coal","Extraction",1662,15
+"153","BUB Energy",-90,40,"Natural gas","Processing",7421,7
+"154","Tinted",-96,28,"Coal","Extraction",2718,20
+"155","Seets Independent",-117,30,"Oil","Processing",8584,8
+"156","Seets Independent",-115,45,"Coal","Extraction",2621,10
+"157","Spyte",-121,45,"Coal","Extraction",4220,6
+"158","Woodward",-124,40,"Oil","Processing",3211,15
+"159","Reves ltd",-103,48,"Coal","Extraction",6412,11
+"160","LTF",-72,37,"Coal","Extraction",9708,16
+"161","Tinted",-82,37,"Coal","Processing",8015,7
+"162","Woodward",-93,47,"Oil","Extraction",7730,9
+"163","LTF",-69,29,"Oil","Processing",1800,18
+"164","Reves ltd",-123,41,"Oil","Processing",1226,2
+"165","BUB Energy",-104,36,"Coal","Processing",916,8
+"166","Leex",-68,42,"Oil","Processing",491,18
+"167","LTF",-89,47,"Oil","Extraction",5406,15
+"168","Jeans and co",-107,46,"Oil","Processing",3263,1
+"169","LTF",-81,46,"Natural gas","Extraction",1701,12
+"170","Leex",-122,45,"Oil","Extraction",4529,9
+"171","Leex",-119,33,"Oil","Processing",3485,18
+"172","Cruxx",-89,42,"Oil","Extraction",942,12
+"173","Reves ltd",-97,48,"Oil","Processing",279,7
+"174","COYG",-99,32,"Coal","Processing",1993,18
+"175","Spyte",-70,42,"Coal","Processing",7652,15
+"176","COYG",-70,38,"Oil","Extraction",592,10
+"177","Jeans and co",-124,28,"Natural gas","Processing",5638,17
+"178","Jeans and co",-103,31,"Natural gas","Extraction",6031,3
+"179","Woodward",-124,48,"Natural gas","Extraction",4923,1
+"180","Cruxx",-120,41,"Coal","Extraction",4238,1
+"181","Woodward",-86,44,"Natural gas","Processing",5208,12
+"182","Woodward",-113,48,"Natural gas","Extraction",7101,14
+"183","BUB Energy",-96,31,"Coal","Extraction",4964,1
+"184","Tinted",-115,34,"Oil","Processing",6592,20
+"185","Devo Minds",-99,30,"Oil","Extraction",453,3
+"186","Xeros",-82,44,"Natural gas","Extraction",1141,12
+"187","Xeros",-104,30,"Oil","Extraction",9553,10
+"188","Unique Oil",-123,33,"Coal","Extraction",4324,7
+"189","Cruxx",-74,41,"Oil","Processing",373,10
+"190","Tinted",-100,43,"Coal","Processing",1451,12
+"191","Reves ltd",-73,40,"Coal","Processing",5584,19
+"192","Unique Oil",-88,34,"Coal","Extraction",9104,18
+"193","Reves ltd",-94,41,"Coal","Processing",8142,3
+"194","Devo Minds",-108,47,"Coal","Processing",474,3
+"195","COYG",-123,30,"Natural gas","Processing",5173,8
+"196","Unique Oil",-99,31,"Oil","Processing",4314,4
+"197","Xeros",-98,37,"Coal","Extraction",3615,8
+"198","LTF",-117,38,"Natural gas","Processing",1133,19
+"199","COYG",-123,47,"Oil","Extraction",4829,6
+"200","Tinted",-96,36,"Coal","Extraction",7927,15
+"201","COYG",-86,44,"Oil","Extraction",4701,9
+"202","Leex",-86,47,"Natural gas","Extraction",9340,3
+"203","Woodward",-108,32,"Natural gas","Extraction",2381,16
+"204","LTF",-121,35,"Oil","Extraction",3636,20
+"205","Devo Minds",-121,43,"Natural gas","Processing",3774,2
+"206","COYG",-109,40,"Coal","Processing",5046,5
+"207","Jeans and co",-76,39,"Coal","Processing",8338,18
+"208","COYG",-104,38,"Coal","Processing",2348,9
+"209","Reves ltd",-118,31,"Coal","Extraction",9423,13
+"210","BUB Energy",-101,42,"Coal","Extraction",709,18
+"211","Bards and Tennets",-70,48,"Coal","Processing",7113,9
+"212","BUB Energy",-112,32,"Coal","Extraction",8066,9
+"213","Seets Independent",-121,31,"Coal","Processing",6489,20
+"214","Woodward",-114,37,"Coal","Extraction",3066,3
+"215","Woodward",-96,47,"Oil","Extraction",6766,13
+"216","Leex",-110,29,"Oil","Extraction",3943,16
+"217","COYG",-116,33,"Coal","Extraction",5642,5
+"218","Leex",-117,32,"Oil","Processing",3197,16
+"219","Jeans and co",-81,28,"Oil","Processing",7752,20
+"220","COYG",-116,31,"Natural gas","Processing",5696,20
+"221","Devo Minds",-77,33,"Natural gas","Processing",2103,5
+"222","Jeans and co",-91,36,"Natural gas","Processing",844,16
+"223","Tinted",-119,30,"Natural gas","Extraction",2805,16
+"224","Bards and Tennets",-120,32,"Coal","Extraction",3430,15
+"225","Reves ltd",-114,38,"Oil","Extraction",853,6
+"226","LTF",-84,36,"Oil","Extraction",1799,7
+"227","Seets Independent",-85,35,"Oil","Extraction",1495,11
+"228","Bards and Tennets",-112,44,"Natural gas","Processing",2291,10
+"229","Devo Minds",-91,43,"Oil","Processing",9765,9
+"230","Xeros",-117,48,"Coal","Extraction",6913,19
+"231","BUB Energy",-85,36,"Oil","Processing",6617,17
+"232","LTF",-83,35,"Oil","Extraction",3402,2
+"233","Spyte",-108,43,"Natural gas","Processing",5496,11
+"234","Bards and Tennets",-99,47,"Oil","Extraction",9723,2
+"235","Jeans and co",-112,36,"Coal","Extraction",3765,14
+"236","BUB Energy",-115,33,"Coal","Extraction",6111,14
+"237","Seets Independent",-111,33,"Natural gas","Extraction",9326,2
+"238","Cruxx",-75,32,"Coal","Processing",2452,6
+"239","Jeans and co",-122,32,"Oil","Extraction",6589,6
+"240","Woodward",-118,45,"Natural gas","Processing",3107,10
+"241","Seets Independent",-87,48,"Natural gas","Extraction",1057,18
+"242","Reves ltd",-66,47,"Coal","Processing",891,2
+"243","Cruxx",-82,48,"Natural gas","Processing",3129,16
+"244","Reves ltd",-120,37,"Coal","Processing",2214,3
+"245","LTF",-67,30,"Oil","Processing",8798,16
+"246","BUB Energy",-96,35,"Oil","Processing",733,4
+"247","Devo Minds",-82,44,"Natural gas","Extraction",752,17
+"248","Woodward",-121,41,"Coal","Extraction",6657,12
+"249","Bards and Tennets",-111,39,"Oil","Extraction",4364,11
+"250","Woodward",-101,35,"Coal","Processing",5272,18
+"251","Leex",-70,36,"Coal","Extraction",1500,1
+"252","Jeans and co",-114,31,"Coal","Processing",9809,16
+"253","COYG",-93,47,"Oil","Extraction",2214,14
+"254","Leex",-80,34,"Natural gas","Extraction",9012,10
+"255","Reves ltd",-95,37,"Oil","Processing",9886,6
+"256","LTF",-92,48,"Natural gas","Processing",6804,18
+"257","Woodward",-82,44,"Natural gas","Processing",4632,11
+"258","COYG",-105,44,"Natural gas","Processing",3459,4
+"259","Unique Oil",-86,32,"Coal","Processing",6155,0
+"260","Woodward",-122,42,"Coal","Extraction",3700,11
+"261","Spyte",-111,46,"Coal","Extraction",5910,2
+"262","Jeans and co",-93,30,"Coal","Processing",424,9
+"263","Xeros",-107,33,"Coal","Extraction",9822,10
+"264","Woodward",-113,47,"Natural gas","Extraction",4253,3
+"265","Devo Minds",-99,42,"Oil","Extraction",5229,4
+"266","Cruxx",-77,31,"Oil","Processing",8197,9
+"267","Spyte",-120,27,"Coal","Processing",4721,18
+"268","Seets Independent",-79,43,"Oil","Processing",1896,19
+"269","Spyte",-113,47,"Natural gas","Processing",8134,5
+"270","Tinted",-94,48,"Oil","Processing",5469,19
+"271","Tinted",-111,42,"Coal","Extraction",5691,5
+"272","Devo Minds",-91,33,"Coal","Processing",1391,4
+"273","COYG",-122,34,"Oil","Processing",2007,3
+"274","Cruxx",-90,32,"Oil","Processing",6709,2
+"275","COYG",-90,45,"Coal","Processing",5810,19
+"276","Bards and Tennets",-89,36,"Oil","Processing",1524,14
+"277","Tinted",-104,44,"Oil","Extraction",2811,19
+"278","Woodward",-118,34,"Coal","Extraction",7689,11
+"279","Seets Independent",-105,47,"Coal","Extraction",969,16
+"280","BUB Energy",-90,44,"Natural gas","Processing",7040,20
+"281","Leex",-66,36,"Coal","Extraction",6685,20
+"282","COYG",-104,34,"Coal","Processing",9698,12
+"283","Devo Minds",-102,48,"Oil","Processing",7290,0
+"284","Devo Minds",-97,45,"Natural gas","Processing",5954,14
+"285","Devo Minds",-101,29,"Oil","Extraction",604,15
+"286","Tinted",-91,40,"Oil","Extraction",2605,15
+"287","Xeros",-80,41,"Natural gas","Extraction",1074,3
+"288","BUB Energy",-115,40,"Coal","Processing",5083,8
+"289","COYG",-78,31,"Natural gas","Processing",3542,6
+"290","Reves ltd",-100,40,"Coal","Extraction",6239,9
+"291","BUB Energy",-90,31,"Natural gas","Processing",3783,15
+"292","Spyte",-66,32,"Coal","Extraction",3775,19
+"293","Tinted",-70,33,"Oil","Extraction",3608,11
+"294","Bards and Tennets",-87,44,"Coal","Processing",5514,7
+"295","Jeans and co",-123,44,"Coal","Processing",1051,8
+"296","Bards and Tennets",-109,39,"Oil","Processing",4995,18
+"297","Devo Minds",-123,43,"Natural gas","Extraction",8830,17
+"298","Spyte",-72,41,"Coal","Extraction",4264,20
+"299","Tinted",-66,28,"Coal","Processing",8384,16
+"300","Reves ltd",-105,40,"Coal","Extraction",3001,20
