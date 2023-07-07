@@ -178,7 +178,7 @@ def get_coordinates(county):
 county_names = health_df["County"].unique()
 county_names = county_names.tolist()
 
-#coordinates = []
+coordinates = []
 #for county in county_names:
 #    try:
 #        lat, lon = get_coordinates(county)
@@ -353,7 +353,7 @@ for item in additional:
     item[-2], item[-1] = item[-1], item[-2]
 df_additional = pd.DataFrame(additional, columns=['County', 'Latitude', 'Longitude'])
 final_coordinates = pd.concat([df_coordinates, df_additional], ignore_index = True)
-df = pd.merge(health_df, df_coordinates, on='County')
+df = pd.merge(health_df, final_coordinates, on='County')
 
 # filter datafame by ignoring deaths <= 9 or NaN
 # also drop rows where County is nan
@@ -468,6 +468,7 @@ fig4.update_layout(
 
 ####Dashboard####
 #app = Dash(__name__)
+import dash 
 app = dash.Dash(external_stylesheets=[dbc.themes.LUX])
 
 
