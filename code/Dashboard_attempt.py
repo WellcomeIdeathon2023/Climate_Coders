@@ -137,92 +137,106 @@ mean_ch4.drop_duplicates(subset=['lon_m', 'lat_m'], keep='first', inplace=True)
 #reset
 mean_ch4.reset_index(drop=True, inplace=True)
 
-
+import plotly.graph_objects as go
+from scipy.spatial import cKDTree
 
 import plotly.express as px
 import plotly.graph_objects as go
 
 # Create a Plotly choropleth map
 
-min_value = mean_ch4['ch4'].min()
-max_value = mean_ch4['ch4'].max()
-scaled_values = ((mean_ch4['ch4'] - min_value) / (max_value - min_value)) ** 1.2 * 15
 
+import plotly.graph_objects as go
+import plotly.express as px
+from scipy.spatial.distance import cdist
+import numpy as np
+
+hospitals = simulated[simulated['plant_or_hospital'] == "Hospital"]
+energy_plants = simulated[simulated['plant_or_hospital'] == "Energy plant"]
+
+import plotly.graph_objects as go
+import plotly.express as px
+import numpy as np
+from scipy.spatial import cKDTree
 
 # Create the scatter plot with scaled point sizes
 fig2 = px.scatter_mapbox(mean_ch4, lat="lat_m", lon="lon_m", hover_name="ch4",
-                        color="ch4", size=scaled_values,
-                        color_continuous_scale='viridis',
-                        mapbox_style="carto-positron",
-                        zoom=3,
-                        center={'lat': 39.8283, 'lon': -98.5795},
-                        opacity=0.8, size_max=15)
+                         color="ch4", size=scaled_values,
+                         color_continuous_scale='viridis',
+                         mapbox_style="carto-positron",
+                         zoom=3,
+                         center={'lat': 39.8283, 'lon': -98.5795},
+                         opacity=0.8, size_max=15)
 
-color_values = simulated['plant_or_hospital'].map({'Hospital': 'pink', 'Energy plant': 'purple'})
+# Create a KD-tree for hospitals and energy plants
+hospital_tree = cKDTree(hospitals[['latitude', 'longitude']])
+energy_plant_tree = cKDTree(energy_plants[['latitude', 'longitude']])
 
-# Create KDTree for efficient nearest neighbor search
-mean_ch4_tree = cKDTree(mean_ch4[['lat_m', 'lon_m']])
+def find_nearest_point(tree, lat, lon):
+    _, index = tree.query([lat, lon])
+    return index
 
+def highlight_nearest_hospital_energy_plant(trace, points, selector):
+    # Get the coordinates of the clicked point
+    lat = trace.lat[points.point_inds[0]]
+    lon = trace.lon[points.point_inds[0]]
+    
+    # Find the nearest hospital and energy plant
+    nearest_hospital_index = find_nearest_point(hospital_tree, lat, lon)
+    nearest_energy_plant_index = find_nearest_point(energy_plant_tree, lat, lon)
+    
+    # Get the company names of the nearest hospital and energy plant
+    nearest_hospital_name = hospitals.iloc[nearest_hospital_index]['company_name']
+    nearest_energy_plant_name = energy_plants.iloc[nearest_energy_plant_index]['company_name']
+    
+    # Update the trace to highlight the nearest hospital and energy plant
+    fig2.data[1].selectedpoints = [nearest_hospital_index]
+    fig2.data[2].selectedpoints = [nearest_energy_plant_index]
+    
+    # Update the hovertext to show the company names
+    fig2.data[1].hovertext = hospitals['company_name']
+    fig2.data[2].hovertext = energy_plants['company_name']
+    
+    # Print the company names
+    print("Nearest Hospital: ", nearest_hospital_name)
+    print("Nearest Energy Plant: ", nearest_energy_plant_name)
+
+# Add click event handler to the 'mean_ch4' trace
+fig2.data[0].on_click(highlight_nearest_hospital_energy_plant)
 
 fig2.add_trace(go.Scattermapbox(
-    lat=simulated['latitude'],
-    lon=simulated['longitude'],
+    lat=hospitals['latitude'],
+    lon=hospitals['longitude'],
     mode='markers',
     marker=dict(
-        size=20,
-        color=color_values,
-        opacity=0.7
+        size=10,
+        opacity=0.8
     ),
     hoverinfo='text',
-    hovertext=simulated['company_name'],
-    name='Simulated Data'
+    hovertext=hospitals['company_name'],
+    name='Hospitals',
+    selected=dict(marker=dict(opacity=1))
 ))
 
-# Handle click event
-fig2.update_layout(
-    clickmode='event+select'
-)
-
-# Define callback function for click event
-def click_callback(trace, points, state):
-    selected_point = points.point_inds[0]
-    ch4_point = mean_ch4.iloc[selected_point]
-    _, ch4_index = mean_ch4_tree.query([ch4_point['lat_m'], ch4_point['lon_m']])
-
-    closest_hospital = simulated[simulated['plant_or_hospital'] == 'Hospital'].iloc[ch4_index]
-    closest_plant = simulated[simulated['plant_or_hospital'] == 'Energy plant'].iloc[ch4_index]
-
-    fig2.update_traces(
-        selectedpoints=points.point_inds,
-        hoverinfo='text',
-        hovertext=[
-            f'Closest Hospital: {closest_hospital["company_name"]}',
-            f'Closest Plant: {closest_plant["company_name"]}'
-        ]
-    )
-
-# Assign callback function to click event
-fig2.data[0].on_click(click_callback)
-
-# Update the layout to include the overlay
-fig2.update_layout(legend=dict(
-    yanchor="top",
-    y=0.99,
-    xanchor="left",
-    x=0.01
+fig2.add_trace(go.Scattermapbox(
+    lat=energy_plants['latitude'],
+    lon=energy_plants['longitude'],
+    mode='markers',
+    marker=dict(
+        size=10,
+        opacity=0.8
+    ),
+    hoverinfo='text',
+    hovertext=energy_plants['company_name'],
+    name='Energy plant',
+    selected=dict(marker=dict(opacity=1))
 ))
 
-# Show the combined plot
+fig2.update_layout(clickmode='event+select')
+
 fig2.show()
 
 
-
-# Update plot layout
-fig2.update_layout(title='Methane emissions over the United States, 2019',
-                  coloraxis_colorbar=dict(title='ppb'),
-                  legend=dict(orientation='h', yanchor='top', y=1, xanchor='right', x=1))
-
-fig2.show()
 
 
 
