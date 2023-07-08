@@ -116,35 +116,113 @@ fig.add_trace(
 
 # Read the CSV file
 final_daily2 = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/combined_daily.csv')
+simulated = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/simulated_data.csv')
 # Round 'lon_m' and 'lat_m' columns
 final_daily2['lon_m'] = final_daily2['lon_m'].round()
 final_daily2['lat_m'] = final_daily2['lat_m'].round()
 # Convert 'time' column to datetime
 final_daily2['date'] = pd.to_datetime(final_daily2['time']).dt.date
 # Group by 'date', 'lon_m', and 'lat_m', and calculate the mean of 'ch4'
-mean_ch4 = final_daily2.groupby(['date', 'lon_m', 'lat_m'])['ch4'].mean().reset_index()
+mean_ch4 = final_daily2.groupby(['date','lon_m', 'lat_m'])['ch4'].mean().reset_index()
 # Remove rows with missing values
 mean_ch4 = mean_ch4.dropna()
 
+#convert date to date column
+mean_ch4['date'] = pd.to_datetime(mean_ch4['date'])
+
+#order data by date
+mean_ch4.sort_values(by='date', ascending=False, inplace=True)
+#keep only most recent data for each lon and lat
+mean_ch4.drop_duplicates(subset=['lon_m', 'lat_m'], keep='first', inplace=True)
+#reset
+mean_ch4.reset_index(drop=True, inplace=True)
+
+
 
 import plotly.express as px
+import plotly.graph_objects as go
+
 # Create a Plotly choropleth map
-fig2 = px.scatter_mapbox(mean_ch4,
-                        lat='lat_m',
-                        lon='lon_m',
-                        color='ch4',
+
+min_value = mean_ch4['ch4'].min()
+max_value = mean_ch4['ch4'].max()
+scaled_values = ((mean_ch4['ch4'] - min_value) / (max_value - min_value)) ** 1.2 * 15
+
+
+# Create the scatter plot with scaled point sizes
+fig2 = px.scatter_mapbox(mean_ch4, lat="lat_m", lon="lon_m", hover_name="ch4",
+                        color="ch4", size=scaled_values,
                         color_continuous_scale='viridis',
-                        range_color=(mean_ch4['ch4'].min(), mean_ch4['ch4'].max()),
-                        mapbox_style='open-street-map',
+                        mapbox_style="carto-positron",
                         zoom=3,
                         center={'lat': 39.8283, 'lon': -98.5795},
-                        hover_data=['date'],
-                        labels={'ch4': 'ppb'})
+                        opacity=0.8, size_max=15)
+
+color_values = simulated['plant_or_hospital'].map({'Hospital': 'pink', 'Energy plant': 'purple'})
+
+# Create KDTree for efficient nearest neighbor search
+mean_ch4_tree = cKDTree(mean_ch4[['lat_m', 'lon_m']])
+
+
+fig2.add_trace(go.Scattermapbox(
+    lat=simulated['latitude'],
+    lon=simulated['longitude'],
+    mode='markers',
+    marker=dict(
+        size=20,
+        color=color_values,
+        opacity=0.7
+    ),
+    hoverinfo='text',
+    hovertext=simulated['company_name'],
+    name='Simulated Data'
+))
+
+# Handle click event
+fig2.update_layout(
+    clickmode='event+select'
+)
+
+# Define callback function for click event
+def click_callback(trace, points, state):
+    selected_point = points.point_inds[0]
+    ch4_point = mean_ch4.iloc[selected_point]
+    _, ch4_index = mean_ch4_tree.query([ch4_point['lat_m'], ch4_point['lon_m']])
+
+    closest_hospital = simulated[simulated['plant_or_hospital'] == 'Hospital'].iloc[ch4_index]
+    closest_plant = simulated[simulated['plant_or_hospital'] == 'Energy plant'].iloc[ch4_index]
+
+    fig2.update_traces(
+        selectedpoints=points.point_inds,
+        hoverinfo='text',
+        hovertext=[
+            f'Closest Hospital: {closest_hospital["company_name"]}',
+            f'Closest Plant: {closest_plant["company_name"]}'
+        ]
+    )
+
+# Assign callback function to click event
+fig2.data[0].on_click(click_callback)
+
+# Update the layout to include the overlay
+fig2.update_layout(legend=dict(
+    yanchor="top",
+    y=0.99,
+    xanchor="left",
+    x=0.01
+))
+
+# Show the combined plot
+fig2.show()
+
+
+
 # Update plot layout
 fig2.update_layout(title='Methane emissions over the United States, 2019',
                   coloraxis_colorbar=dict(title='ppb'),
                   legend=dict(orientation='h', yanchor='top', y=1, xanchor='right', x=1))
 
+fig2.show()
 
 
 
