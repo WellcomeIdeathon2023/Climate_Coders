@@ -559,6 +559,56 @@ fig4.update_layout(
 
 
 
+####methane over time#####
+
+df_county = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_monthly_county.csv')
+
+df_county['date'] = pd.to_datetime(df_county['date'])
+
+fig5 = px.scatter(df_county, x='date', y='ch4', color='ch4', trendline='lowess')
+fig5.update_traces(marker=dict(size=5))
+fig5.update_layout(
+  xaxis_title='Year',
+  yaxis_title='Methane ppm',
+  title='Rising methane emissions in the United States (2003-2021)',
+  coloraxis_colorbar=dict(title='Methane ppb')
+)
+
+df_county['date'] = pd.to_datetime(df_county['date'])
+
+
+
+
+####map slider#####
+
+#df_daily = pd.read_csv('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/final_csvs/methane_final_lonlat.csv')
+#states = gpd.read_file('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/data/gadm36_USA_shp/gadm36_USA_1.shp')
+
+# Filter and sample the data
+#df_daily['year'] = pd.to_datetime(df_daily['date']).dt.year
+#df_filtered = df_daily[df_daily['year'] == 2019].sample(n=1000)
+
+#fig = px.scatter_mapbox(df_filtered, lat='latitude', lon='longitude',
+#                        hover_data=['ch4'], color='ch4', color_continuous_scale='Viridis',
+#                        size='ch4', size_max=10, zoom=3)
+
+#fig.update_layout(mapbox_style='open-street-map')
+#fig.update_traces(marker=dict(opacity=0.8))
+#fig.update_layout(legend=dict(x=0, y=1), margin=dict(l=0, r=0, t=0, b=0))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -685,20 +735,54 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
     if pathname == "/":
-        return html.P("Home page - justification spiel, data sources, acknowledgements, stuff on accessibility and reproducibility?")
+        return html.Div([
+            html.H2("Welcome to the Climate Coders Methane Dashboard", className="display-7"),
+            html.Hr(),
+            html.H4("Purpose of the Dashboard"),
+            html.P("The Climate Coders Methane Dashboard aims to provide policymakers with valuable insights into methane levels and their impact on population health in the USA. By visualizing methane emissions, respiratory health data, and related information, this dashboard assists policymakers in making informed decisions to address the challenges posed by methane exposure."),
+            html.H4("Key Features"),
+            html.Ul([
+                html.Li("Methane Map: Interactive map showcasing methane levels across different locations in the USA."),
+                html.Li("Methane Graphs: Graphical representations and visualizations of methane data trends."),
+                html.Li("Health Map: Map displaying mortalities from respiratory diseases and gas leaks."),
+                html.Li("Health Graphs: Graphs presenting respiratory health data and trends."),
+                html.Li("Links to Resources: Comprehensive list of resources, papers, and articles related to methane emissions and respiratory health."),
+            ]),
+            html.H4("How to Use"),
+            html.P("Navigate through the tabs at the sidebar to access different sections of the dashboard. Each section provides specific information and visualizations related to methane levels and health impacts. Use the interactive components to explore the data and gain insights."),
+            html.H4("For Policymakers"),
+            html.P("We encourage policymakers to utilize this dashboard as a resource for evidence-based decision-making. By considering the data, visualizations, and resources provided here, policymakers can better understand the magnitude of methane emissions and the potential health risks associated with it. Additionally, we recommend referring to the 'Links to Resources' section for further in-depth research and reports."),
+            html.Hr(),
+            html.H4("Important Note"),
+            html.P("This dashboard is for informational purposes only and should not be used as the sole basis for policymaking. It is crucial to consult domain experts, conduct further analysis, and consider additional factors when making policy decisions."),
+            html.Hr(),
+            html.H5("For more information, please visit the following pages:"),
+            dbc.Nav(
+                [
+                    dbc.NavLink("Methane Emissions", href="/page-1", active="exact"),
+                    dbc.NavLink("Respiratory Health", href="/page-2", active="exact"),
+                    dbc.NavLink("Links to Resources", href="/page-3", active="exact"),
+                ],
+                vertical=True,
+                pills=True,
+            ),
+            html.Hr(),
+            html.P("Acknowledgements, data sources, and contact information."),
+        ], style={"padding": "2rem"})
     elif pathname == "/page-1":
         return html.Div([
             dcc.Tabs(id="page-1-tabs", value='tab-1', children=[
-                dcc.Tab(label='Methane Map', value='tab-1', style=tab_style, selected_style=tab_selected_style),
-                dcc.Tab(label='Methane Graphs', value='tab-2', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Methane leaks', value='tab-1', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Methane levels by state', value='tab-2', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Methane map slider', value='tab-3', style=tab_style, selected_style=tab_selected_style),
             ], style=tabs_styles),
             html.Div(id='page-1-tabs-content')
         ])
     elif pathname == "/page-2":
         return html.Div([
-            dcc.Tabs(id="page-2-tabs", value='tab-3', children=[
-                dcc.Tab(label='Health Map', value='tab-3', style=tab_style, selected_style=tab_selected_style),
-                dcc.Tab(label='Health Graphs', value='tab-4', style=tab_style, selected_style=tab_selected_style),
+            dcc.Tabs(id="page-2-tabs", value='tab-4', children=[
+                dcc.Tab(label='Health Map', value='tab-4', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Health Graphs', value='tab-5', style=tab_style, selected_style=tab_selected_style),
             ], style=tabs_styles),
             html.Div(id='page-2-tabs-content')
         ])
@@ -725,22 +809,45 @@ def render_page_1_content(tab):
             html.H4('Top Locations by Methane Levels'),
             generate_top_locations_table()
          ])
-    elif tab == 'tab-2':
+    if tab == 'tab-2':
         return html.Div([
-            html.H3('Methane data visualizations'),
-            dcc.Graph(id='Methane Stripes', figure=fig)
+             html.H3('Methane data visualizations'),
+             dcc.Dropdown(
+                id='county-dropdown',
+                options=[{'label': STATEFP, 'value': STATEFP} for STATEFP in df_county['STATEFP'].unique()],
+                value=None,
+                placeholder='Select a county',
+                style={'width': '200px', 'margin-bottom': '20px'}
+            ),
+            dcc.Graph(
+                id='scatter-plot'
+            )
+#       dcc.Graph(id='Methane Stripes', figure=fig)
         ])
+#    elif tab == 'tab-3':
+#        return html.Div([
+#            html.H3('Methane data slider'),
+#            dcc.Graph(id='map-graph'),
+#            dcc.Slider(
+#        id='date-slider',
+#        min=df_daily['year'].min(),
+#        max=df_daily['year'].max(),
+#        value=df_filtered['year'].min(),
+#        marks={str(year): str(year) for year in df_daily['year'].unique()},
+#        step=None
+#    )
+#        ])
 
 
 @app.callback(Output('page-2-tabs-content', 'children'), [Input('page-2-tabs', 'value')])
 def render_page_2_content(tab):
-    if tab == 'tab-3':
+    if tab == 'tab-4':
         return html.Div([
             html.H3('Map of Mortalities from respiratory diseases and gas leaks'),
             dcc.Graph(id='Health map', figure=fig3)
 
         ])
-    elif tab == 'tab-4':
+    elif tab == 'tab-5':
         return html.Div([
             html.H3('Health data visualizations'),
             dcc.Graph(id='Health visualisation', figure=fig4)
@@ -757,6 +864,28 @@ def find_nearest_point(lat, lon, df):
     nearest_point = df.iloc[nearest_index]
     return nearest_point
 
+
+# Define the callback function to update the scatter plot based on the dropdown selection
+@app.callback(
+    Output('scatter-plot', 'figure'),
+    [Input('county-dropdown', 'value')]
+)
+def update_scatter_plot(selected_county):
+    if selected_county is None:
+        filtered_df = df_county
+    else:
+        filtered_df = df_county[df_county['STATEFP'] == selected_county]
+
+    fig5 = px.scatter(filtered_df, x='date', y='ch4', color='ch4', trendline='lowess')
+    fig5.update_traces(marker=dict(size=5))
+    fig5.update_layout(
+        xaxis_title='Year',
+        yaxis_title='Methane ppm',
+        title='Rising methane emissions in the United States (2003-2021)',
+        coloraxis_colorbar=dict(title='Methane ppb')
+    )
+    
+    return fig5
 
 @app.callback(Output('map', 'figure'), [Input('map', 'clickData')])
 def update_nearest_hospital(click_data):
@@ -833,6 +962,26 @@ def update_nearest_hospital(click_data):
 
     return fig2
 
+
+#@app.callback(
+#    dash.dependencies.Output('map-graph', 'figure'),
+#    [dash.dependencies.Input('date-slider', 'value')]
+#)
+#def update_map(selected_year):
+#    filtered_data = df_daily[df_daily['year'] == selected_year]###
+#
+#    fig6 = px.scatter_mapbox(filtered_data, lat='latitude', lon='longitude',
+#                            hover_data=['ch4'], color='ch4', color_continuous_scale='Viridis',
+#                            size='ch4', size_max=10, zoom=3)
+#    
+#    fig6.update_layout(mapbox_style='open-street-map')
+#    fig6.update_traces(marker=dict(opacity=0.8))
+#    fig6.update_layout(legend=dict(x=0, y=1), margin=dict(l=0, r=0, t=0, b=0))
+#    
+#    return fig6
+
+
+
 if __name__ == '__main__':
     app.run_server(host='localhost',port=8005)
 
@@ -843,5 +992,124 @@ if __name__ == '__main__':
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+app = dash.Dash(external_stylesheets=[dbc.themes.LUX])
+
+# Define the layout of the app
+app.layout = html.Div([
+    dcc.Graph(id='map')
+])
+
+def find_nearest_point(lat, lon, df):
+    point = np.array([[lat, lon]])
+    distances = cdist(point, df[['lat', 'lon']])
+    nearest_index = np.argmin(distances)
+    nearest_point = df.iloc[nearest_index]
+    return nearest_point
+
+
+@app.callback(Output('map', 'figure'), [Input('map', 'clickData')])
+def update_nearest_hospital(click_data):
+    if click_data:
+        point = click_data['points'][0]
+
+        lat = point['lat']
+        lon = point['lon']
+
+        nearest_hospital = find_nearest_point(lat, lon, hospitals)
+        nearest_energy_plant = find_nearest_point(lat, lon, energy_plants)
+
+        # Create a new figure with the nearest hospital and energy plant annotations
+        new_fig = go.Figure(fig2)
+
+        new_fig.add_trace(
+            go.Scattermapbox(
+                lat=[lat, nearest_hospital['lat']],
+                lon=[lon, nearest_hospital['lon']],
+                mode='lines',
+                line=dict(color='red', width=2),
+                hoverinfo='none'
+            )
+        )
+        new_fig.add_trace(
+            go.Scattermapbox(
+                lat=[lat, nearest_energy_plant['lat']],
+                lon=[lon, nearest_energy_plant['lon']],
+                mode='lines',
+                line=dict(color='blue', width=2),
+                hoverinfo='none'
+            )
+        )
+        new_fig.add_trace(
+            go.Scattermapbox(
+                lat=[nearest_hospital['lat']],
+                lon=[nearest_hospital['lon']],
+                mode='markers',
+                customdata=np.dstack((nearest_hospital['company_name'],
+                                      nearest_hospital['phone_number'],
+                                      nearest_hospital['number_of_employees'],
+                                      nearest_hospital['previous_leaks_n'],
+                                      nearest_hospital['fossil_fuel_type'],
+                                      nearest_hospital['number_of_beds']
+                                      )).T.tolist(),
+                marker=dict(size=10, color='red'),
+        hovertemplate='Company Name: %{customdata[0]} <br>Company telephone: %{customdata[1]} <br>Number of Employees: %{customdata[2]} <br>Number of Hospital Beds: % {customdata[5]}'
+            )
+        )
+
+        new_fig.add_trace(
+            go.Scattermapbox(
+                lat=[nearest_energy_plant['lat']],
+                lon=[nearest_energy_plant['lon']],
+                mode='markers',
+                customdata=np.dstack((nearest_hospital['company_name'],
+                                      nearest_hospital['phone_number'],
+                                      nearest_hospital['number_of_employees'],
+                                      nearest_hospital['previous_leaks_n'],
+                                      nearest_hospital['fossil_fuel_type'],
+                                      nearest_hospital['number_of_beds']
+                                      )),
+                marker=dict(size=10, color='blue'),
+                hovertemplate='Company Name: %{customdata[0]}<br>Company telephone: %{customdata[1]}<br>Number of Employees: %{customdata[2]}<br>Number of previous methane leaks: %{customdata[3]}<br>Fossil fuel type: %{customdata[4]}'
+            )
+        )
+
+        # Set the zoom and view location from the previous figure
+        new_fig.update_layout(mapbox=dict(center=dict(lat=fig2['layout']['mapbox']['center']['lat'],
+                                                      lon=fig2['layout']['mapbox']['center']['lon']),
+                                               zoom=fig2['layout']['mapbox']['zoom']))
+
+        return new_fig
+
+    return fig2
+
+if __name__ == '__main__':
+    app.run_server(host='localhost',port=8005)
+
+z1, z2, z3 = np.random.random((3, 7, 7))
+
+customdata = np.dstack((z2, z3))
+mycustomdata = np.dstack((hospitals["company_name"], hospitals["number_of_employees"]))
+mycustomdata = mycustomdata.T.tolist()
 
 
