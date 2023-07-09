@@ -571,8 +571,6 @@ StateAbbrDF = FipsDF[["StateAbbr", 'StateFIPS', "StateName"]].drop_duplicates()
 df_county = pd.merge(df_county, StateAbbrDF.astype({'StateFIPS': 'int64'}), left_on='STATEFP', right_on='StateFIPS', how='left')
 df_county['StateName'] = df_county['StateName'].astype('object')
 df_county = df_county.dropna(subset=['StateName'])
-df_county['date'] = pd.to_datetime(df_county['date'])
-
 
 #fig5 = px.scatter(df_county, x='date', y='ch4', color='ch4', trendline='lowess')
 #fig5.update_traces(marker=dict(size=5))
@@ -600,7 +598,7 @@ import dash_html_components as html
 from datetime import datetime
 
 # Read the data
-df_daily = pd.read_csv('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/final_csvs/methane_final_lonlat.csv')
+df_daily = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_lonlat.csv')
 states = gpd.read_file('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/data/gadm36_USA_shp/gadm36_USA_1.shp')
 
 FipsDF = pd.read_csv('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/data/fips2county.tsv', sep='\t', header='infer', dtype=str, encoding='latin-1')
@@ -750,6 +748,27 @@ content = html.Div(id="page-content", style=CONTENT_STYLE)
 
 app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 
+# Define the callback function to update the scatter plot based on the dropdown selection
+@app.callback(
+    Output('scatter-plot', 'figure'),
+    [Input('county-dropdown', 'value')]
+)
+def update_scatter_plot(selected_county):
+    if selected_county is None:
+        filtered_df = df_county
+    else:
+        filtered_df = df_county[df_county['STATEFP'] == selected_county]
+
+    fig = px.scatter(filtered_df, x='date', y='ch4', color='ch4', trendline='lowess')
+    fig.update_traces(marker=dict(size=5))
+    fig.update_layout(
+        xaxis_title='Year',
+        yaxis_title='Methane ppm',
+        title='Rising methane emissions in the United States (2003-2021)',
+        coloraxis_colorbar=dict(title='Methane ppb')
+    )
+    
+    return fig
 
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
@@ -828,22 +847,23 @@ def render_page_1_content(tab):
             html.H4('Top Locations by Methane Levels'),
             generate_top_locations_table()
          ])
-    if tab == 'tab-2':
+    elif tab == 'tab-2':
         return html.Div([
-             html.H3('Methane data visualizations'),
-             dcc.Dropdown(
-                id='county-dropdown',
-                options=[{'label': StateName, 'value': StateName} for StateName in sorted(df_county['StateName'].unique())],
-                value=None,
-                placeholder='Select a state',
-                style={'width': '200px', 'margin-bottom': '20px'}
-            ),
-            dcc.Graph(
-                id='scatter-plot'
-            )
-])
-#       dcc.Graph(id='Methane Stripes', figure=fig)
+            html.H3('Methane data visualizations'),
+            dcc.Dropdown(
+        id='county-dropdown',
+        options=[{'label': STATEFP, 'value': STATEFP} for STATEFP in df_county['STATEFP'].unique()],
+        value=None,
+        placeholder='Select a county',
+        style={'width': '200px', 'margin-bottom': '20px'}
+    ),
+    dcc.Graph(
+        id='scatter-plot')
+
         ])
+#])
+#       dcc.Graph(id='Methane Stripes', figure=fig)
+#        ])
 #    elif tab == 'tab-3':
 #        return html.Div([
 #            html.H3('Methane data slider'),
@@ -886,26 +906,6 @@ def find_nearest_point(lat, lon, df):
 
 
 # Define the callback function to update the scatter plot based on the dropdown selection
-@app.callback(
-    Output('scatter-plot', 'figure'),
-    [Input('county-dropdown', 'value')]
-)
-def update_scatter_plot(selected_county):
-    if selected_county is None:
-        filtered_df = df_county
-    else:
-        filtered_df = df_county[df_county['StateName'] == selected_county]
-
-    fig5 = px.scatter(filtered_df, x='date', y='ch4', color='ch4', trendline='lowess', range_color=[df_county['ch4'].min(), df_county['ch4'].max()])
-    fig5.update_traces(marker=dict(size=5))
-    fig5.update_layout(
-        xaxis_title='Year',
-        yaxis_title='Methane ppm',
-        title='Rising methane emissions in the United States (2003-2021)',
-        coloraxis_colorbar=dict(title='Methane ppb')
-    )
-    
-    return fig5
 
 @app.callback(Output('map', 'figure'), [Input('map', 'clickData')])
 def update_nearest_hospital(click_data):
@@ -1002,134 +1002,43 @@ def update_nearest_hospital(click_data):
 
 
 
-if __name__ == '__main__':
-    app.run_server(host='localhost',port=8005)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app = dash.Dash(external_stylesheets=[dbc.themes.LUX])
-
-# Define the layout of the app
-app.layout = html.Div([
-    dcc.Graph(id='map')
-])
-
-def find_nearest_point(lat, lon, df):
-    point = np.array([[lat, lon]])
-    distances = cdist(point, df[['lat', 'lon']])
-    nearest_index = np.argmin(distances)
-    nearest_point = df.iloc[nearest_index]
-    return nearest_point
-
-
-@app.callback(Output('map', 'figure'), [Input('map', 'clickData')])
-def update_nearest_hospital(click_data):
-    if click_data:
-        point = click_data['points'][0]
-
-        lat = point['lat']
-        lon = point['lon']
-
-        nearest_hospital = find_nearest_point(lat, lon, hospitals)
-        nearest_energy_plant = find_nearest_point(lat, lon, energy_plants)
-
-        # Create a new figure with the nearest hospital and energy plant annotations
-        new_fig = go.Figure(fig2)
-
-        new_fig.add_trace(
-            go.Scattermapbox(
-                lat=[lat, nearest_hospital['lat']],
-                lon=[lon, nearest_hospital['lon']],
-                mode='lines',
-                line=dict(color='red', width=2),
-                hoverinfo='none'
-            )
-        )
-        new_fig.add_trace(
-            go.Scattermapbox(
-                lat=[lat, nearest_energy_plant['lat']],
-                lon=[lon, nearest_energy_plant['lon']],
-                mode='lines',
-                line=dict(color='blue', width=2),
-                hoverinfo='none'
-            )
-        )
-        new_fig.add_trace(
-            go.Scattermapbox(
-                lat=[nearest_hospital['lat']],
-                lon=[nearest_hospital['lon']],
-                mode='markers',
-                customdata=np.dstack((nearest_hospital['company_name'],
-                                      nearest_hospital['phone_number'],
-                                      nearest_hospital['number_of_employees'],
-                                      nearest_hospital['previous_leaks_n'],
-                                      nearest_hospital['fossil_fuel_type'],
-                                      nearest_hospital['number_of_beds']
-                                      )).T.tolist(),
-                marker=dict(size=10, color='red'),
-        hovertemplate='Company Name: %{customdata[0]} <br>Company telephone: %{customdata[1]} <br>Number of Employees: %{customdata[2]} <br>Number of Hospital Beds: % {customdata[5]}'
-            )
-        )
-
-        new_fig.add_trace(
-            go.Scattermapbox(
-                lat=[nearest_energy_plant['lat']],
-                lon=[nearest_energy_plant['lon']],
-                mode='markers',
-                customdata=np.dstack((nearest_hospital['company_name'],
-                                      nearest_hospital['phone_number'],
-                                      nearest_hospital['number_of_employees'],
-                                      nearest_hospital['previous_leaks_n'],
-                                      nearest_hospital['fossil_fuel_type'],
-                                      nearest_hospital['number_of_beds']
-                                      )),
-                marker=dict(size=10, color='blue'),
-                hovertemplate='Company Name: %{customdata[0]}<br>Company telephone: %{customdata[1]}<br>Number of Employees: %{customdata[2]}<br>Number of previous methane leaks: %{customdata[3]}<br>Fossil fuel type: %{customdata[4]}'
-            )
-        )
-
-        # Set the zoom and view location from the previous figure
-        new_fig.update_layout(mapbox=dict(center=dict(lat=fig2['layout']['mapbox']['center']['lat'],
-                                                      lon=fig2['layout']['mapbox']['center']['lon']),
-                                               zoom=fig2['layout']['mapbox']['zoom']))
-
-        return new_fig
-
-    return fig2
 
 if __name__ == '__main__':
     app.run_server(host='localhost',port=8005)
 
-z1, z2, z3 = np.random.random((3, 7, 7))
 
-customdata = np.dstack((z2, z3))
-mycustomdata = np.dstack((hospitals["company_name"], hospitals["number_of_employees"]))
-mycustomdata = mycustomdata.T.tolist()
+
+
+
+
+
+# z1, z2, z3 = np.random.random((3, 7, 7))
+
+# customdata = np.dstack((z2, z3))
+# mycustomdata = np.dstack((hospitals["company_name"], hospitals["number_of_employees"]))
+# mycustomdata = mycustomdata.T.tolist()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
