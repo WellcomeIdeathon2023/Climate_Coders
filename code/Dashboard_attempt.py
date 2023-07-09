@@ -173,20 +173,82 @@ top_10_percent = int(len(df_sorted) * 0.1)
 # Slice the DataFrame to keep only the top rows
 top_10_df = df_sorted.head(top_10_percent)
 
+n = len(top_10_df)
+
+# Create a new column 'Ascending' with values from 1 to n
+top_10_df['USA_Methane_Ranking'] = range(1, n+1)
+
+top_10_df = top_10_df.rename(columns={'lat_m': 'lat'})
+top_10_df = top_10_df.rename(columns={'lon_m': 'lon'})
+
+
+from scipy.spatial.distance import cdist
+
+# Assuming 'hospitals' and 'top_10_df' are your DataFrames
+# Assuming 'hospitals' has columns 'Hospital Name', 'Latitude', and 'Longitude'
+# Assuming 'top_10_df' has columns 'Row ID', 'Latitude', and 'Longitude'
+
+# Create a helper function to find the nearest hospital for a given location
+def find_nearest_hospital(row, hospitals):
+    # Create a DataFrame with coordinates of the current row
+    coords = pd.DataFrame({'lat': [row['lat']], 'lon': [row['lon']]})
+
+    # Calculate the distances between the coordinates of the current row and all hospitals
+    distances = cdist(coords.values, hospitals[['lat', 'lon']].values, metric='euclidean')
+
+    # Find the index of the nearest hospital
+    nearest_index = distances.argmin()
+
+    # Return the name of the nearest hospital
+    return hospitals.iloc[nearest_index]['company_name']
+
+# Apply the helper function to each row in 'top_10_df'
+top_10_df['Nearest_Hospital'] = top_10_df.apply(lambda row: find_nearest_hospital(row, hospitals), axis=1)
+
+
+
+# Create a helper function to find the nearest hospital for a given location
+def find_nearest_plant(row, energy_plants):
+    # Create a DataFrame with coordinates of the current row
+    coords = pd.DataFrame({'lat': [row['lat']], 'lon': [row['lon']]})
+
+    # Calculate the distances between the coordinates of the current row and all hospitals
+    distances = cdist(coords.values, energy_plants[['lat', 'lon']].values, metric='euclidean')
+
+
+    # Find the index of the nearest hospital
+    nearest_index = distances.argmin()
+
+    # Return the name of the nearest hospital
+    return energy_plants.iloc[nearest_index]['company_name']
+
+# Apply the helper function to each row in 'top_10_df'
+top_10_df['Nearest_Energy_plant'] = top_10_df.apply(lambda row: find_nearest_plant(row, energy_plants), axis=1)
+
+
+
+
+
 min_value = top_10_df['ch4'].min()
 max_value = top_10_df['ch4'].max()
 scaled_values = ((top_10_df['ch4'] - min_value) / (max_value - min_value)) ** 1.2 * 15
 
+customdata = top_10_df[['USA_Methane_Ranking', 'Nearest_Hospital', 'Nearest_Energy_plant', 'ch4']].values.tolist()
+customdata = np.stack((top_10_df['USA_Methane_Ranking'], top_10_df['Nearest_Hospital'], top_10_df['Nearest_Energy_plant'], top_10_df['ch4']), axis=-1)
+
 
 # Create the scatter plot with scaled point sizes
-fig2 = px.scatter_mapbox(top_10_df, lat="lat_m", lon="lon_m", hover_name="ch4",
+fig2 = px.scatter_mapbox(top_10_df, lat="lat", lon="lon", hover_name="ch4",
                          size=scaled_values,
                          color_continuous_scale='viridis',
                          mapbox_style="carto-positron",
-                         zoom=3,
+                         zoom=2,
                          center={'lat': 39.8283, 'lon': -98.5795},
-                         opacity=0.8, size_max=30)
+                         opacity=0.8, size_max=30,    
+                         custom_data=['USA_Methane_Ranking', 'Nearest_Hospital', 'Nearest_Energy_plant', 'ch4'])
 
+
+fig2.update_traces(hovertemplate='Methane ranking: %{customdata[0]}<br>Nearest Hospital: %{customdata[1]}<br>Nearest Energy Plant: %{customdata[2]}<br>Methane particles (Mole fraction): %{customdata[3]}')
 
 
 
@@ -513,6 +575,10 @@ fig4.update_layout(
 ####Dashboard####
 #app = Dash(__name__)
 import dash 
+from dash import dash_table
+import reverse_geocoder as rg
+
+
 app = dash.Dash(external_stylesheets=[dbc.themes.LUX])
 
 
@@ -578,6 +644,38 @@ sidebar = html.Div(
 )
 
 
+def generate_top_locations_table():
+    # Sort the dataframe by 'ch4' column in descending order and select the top 10 rows
+    top_locations = top_10_df.sort_values('ch4', ascending=False).head(10)
+    
+    # Use reverse geocoding to obtain the US state based on latitude and longitude
+    coordinates = list(zip(top_locations['lat'], top_locations['lon']))
+    state_info = rg.search(coordinates)
+    us_states = [info['admin1'] for info in state_info]
+    
+    # Add the 'US State' column to the dataframe
+    top_locations['US State'] = us_states
+
+    top_locations.columns = [col.replace('_', ' ') for col in top_locations.columns]
+    
+    
+ 
+
+    # Rename 'ch4' column to 'Methane particles (Mole fraction)'
+    top_locations.rename(columns={'ch4': 'Methane particles (Mole fraction)'}, inplace=True)
+    
+    
+    # Create a Dash DataTable component
+    table = dash_table.DataTable(
+        id='top-locations-table',
+        columns=[{'name': col, 'id': col} for col in top_locations.columns],
+        data=top_locations.to_dict('records'),
+        style_data={'whiteSpace': 'normal', 'height': 'auto'},
+        style_table={'overflowX': 'auto'},
+    )
+    
+    return table
+
 
 content = html.Div(id="page-content", style=CONTENT_STYLE)
 
@@ -622,8 +720,11 @@ def render_page_1_content(tab):
     if tab == 'tab-1':
         return html.Div([
             html.H3('Map of Methane Levels, overlayed with energy plant and hospital locations'),
-            dcc.Graph(id='map')
-        ])
+            dcc.Graph(id='map'),
+            html.Hr(),
+            html.H4('Top Locations by Methane Levels'),
+            generate_top_locations_table()
+         ])
     elif tab == 'tab-2':
         return html.Div([
             html.H3('Methane data visualizations'),
@@ -648,6 +749,7 @@ def render_page_2_content(tab):
 
 
 
+
 def find_nearest_point(lat, lon, df):
     point = np.array([[lat, lon]])
     distances = cdist(point, df[['lat', 'lon']])
@@ -656,13 +758,10 @@ def find_nearest_point(lat, lon, df):
     return nearest_point
 
 
-@app.callback(Output('map', 'figure'), [Input('map', 'hoverData'), Input('map', 'clickData')])
-def update_nearest_hospital(hover_data, click_data):
-    if hover_data or click_data:
-        if hover_data:
-            point = hover_data['points'][0]
-        else:
-            point = click_data['points'][0]
+@app.callback(Output('map', 'figure'), [Input('map', 'clickData')])
+def update_nearest_hospital(click_data):
+    if click_data:
+        point = click_data['points'][0]
 
         lat = point['lat']
         lon = point['lon']
@@ -672,6 +771,7 @@ def update_nearest_hospital(hover_data, click_data):
 
         # Create a new figure with the nearest hospital and energy plant annotations
         new_fig = go.Figure(fig2)
+
         new_fig.add_trace(
             go.Scattermapbox(
                 lat=[lat, nearest_hospital['lat']],
@@ -695,27 +795,43 @@ def update_nearest_hospital(hover_data, click_data):
                 lat=[nearest_hospital['lat']],
                 lon=[nearest_hospital['lon']],
                 mode='markers',
+                customdata=[
+                    nearest_hospital['company_name'],
+                    nearest_hospital['phone_number'],
+                    nearest_hospital['number_of_employees'],
+                    nearest_hospital['previous_leaks_n'],
+                    nearest_hospital['fossil_fuel_type'],
+                    nearest_hospital['number_of_beds']
+                ],
                 marker=dict(size=10, color='red'),
-                hoverinfo='text',
-                hovertext=nearest_hospital['company_name']  # Replace 'company_name' with the appropriate column name from the 'hospitals' dataframe
+                hovertemplate='Company Name: %{customdata[0]}<br>Company telephone: %{customdata[1]}<br>Number of Employees: %{customdata[2]}<br>Number of Hospital Beds: %{customdata[5]}'
             )
         )
+
         new_fig.add_trace(
             go.Scattermapbox(
                 lat=[nearest_energy_plant['lat']],
                 lon=[nearest_energy_plant['lon']],
                 mode='markers',
+                customdata=[
+                    nearest_energy_plant['company_name'],
+                    nearest_energy_plant['phone_number'],
+                    nearest_energy_plant['number_of_employees'],
+                    nearest_energy_plant['previous_leaks_n'],
+                    nearest_energy_plant['fossil_fuel_type']
+                ],
                 marker=dict(size=10, color='blue'),
-                hoverinfo='text',
-                hovertext=nearest_energy_plant['company_name']  # Replace 'plant_name' with the appropriate column name from the 'energy_plants' dataframe
+                hovertemplate='Company Name: %{customdata[0]}<br>Company telephone: %{customdata[1]}<br>Number of Employees: %{customdata[2]}<br>Number of previous methane leaks: %{customdata[3]}<br>Fossil fuel type: %{customdata[4]}'
             )
         )
+       # Set the zoom and view location from the previous figure
+        new_fig.update_layout(mapbox=dict(center=dict(lat=fig2['layout']['mapbox']['center']['lat'],
+                                                      lon=fig2['layout']['mapbox']['center']['lon']),
+                                               zoom=fig2['layout']['mapbox']['zoom']))
 
         return new_fig
 
     return fig2
-
-
 
 if __name__ == '__main__':
     app.run_server(host='localhost',port=8005)
