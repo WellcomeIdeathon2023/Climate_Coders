@@ -565,38 +565,57 @@ df_county = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Da
 
 df_county['date'] = pd.to_datetime(df_county['date'])
 
-fig5 = px.scatter(df_county, x='date', y='ch4', color='ch4', trendline='lowess')
-fig5.update_traces(marker=dict(size=5))
-fig5.update_layout(
-  xaxis_title='Year',
-  yaxis_title='Methane ppm',
-  title='Rising methane emissions in the United States (2003-2021)',
-  coloraxis_colorbar=dict(title='Methane ppb')
-)
+FipsDF = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/fips2county.tsv', sep='\t', header='infer', dtype=str, encoding='latin-1')
+StateAbbrDF = FipsDF[["StateAbbr", 'StateFIPS', "StateName"]].drop_duplicates()
 
+df_county = pd.merge(df_county, StateAbbrDF.astype({'StateFIPS': 'int64'}), left_on='STATEFP', right_on='StateFIPS', how='left')
+df_county['StateName'] = df_county['StateName'].astype('object')
+df_county = df_county.dropna(subset=['StateName'])
 df_county['date'] = pd.to_datetime(df_county['date'])
+
+
+#fig5 = px.scatter(df_county, x='date', y='ch4', color='ch4', trendline='lowess')
+#fig5.update_traces(marker=dict(size=5))
+#fig5.update_layout(
+#  xaxis_title='Year',
+#  yaxis_title='Methane ppm',
+#  title='Rising methane emissions in the United States (2003-2021)',
+#  coloraxis_colorbar=dict(title='Methane ppb')
+#)
+
+#df_county['date'] = pd.to_datetime(df_county['date'])
 
 
 
 
 ####map slider#####
 
-#df_daily = pd.read_csv('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/final_csvs/methane_final_lonlat.csv')
-#states = gpd.read_file('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/data/gadm36_USA_shp/gadm36_USA_1.shp')
+import pandas as pd
+import geopandas as gpd
+import plotly.express as px
+import plotly.graph_objects as go
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
+from datetime import datetime
+
+# Read the data
+df_daily = pd.read_csv('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/final_csvs/methane_final_lonlat.csv')
+states = gpd.read_file('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/data/gadm36_USA_shp/gadm36_USA_1.shp')
+
+FipsDF = pd.read_csv('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/data/fips2county.tsv', sep='\t', header='infer', dtype=str, encoding='latin-1')
+StateAbbrDF = FipsDF[["StateAbbr", 'StateFIPS', "StateName"]].drop_duplicates()
+
+df_daily = pd.merge(df_daily, StateAbbrDF.astype({'StateFIPS': 'int64'}), left_on='STATEFP', right_on='StateFIPS', how='left')
+df_daily['StateName'] = df_daily['StateName'].astype('object')
+df_daily = df_daily.dropna(subset=['StateName'])
 
 # Filter and sample the data
-#df_daily['year'] = pd.to_datetime(df_daily['date']).dt.year
-#df_filtered = df_daily[df_daily['year'] == 2019].sample(n=1000)
+df_daily['date'] = pd.to_datetime(df_daily['date'])
+df_daily['day_of_year'] = df_daily['date'].dt.dayofyear
+df_daily['week_of_year'] = df_daily['date'].dt.isocalendar().week
 
-#fig = px.scatter_mapbox(df_filtered, lat='latitude', lon='longitude',
-#                        hover_data=['ch4'], color='ch4', color_continuous_scale='Viridis',
-#                        size='ch4', size_max=10, zoom=3)
-
-#fig.update_layout(mapbox_style='open-street-map')
-#fig.update_traces(marker=dict(opacity=0.8))
-#fig.update_layout(legend=dict(x=0, y=1), margin=dict(l=0, r=0, t=0, b=0))
-
-
+df_filtered = df_daily[df_daily['date'].dt.year == 2019]
 
 
 
@@ -814,14 +833,15 @@ def render_page_1_content(tab):
              html.H3('Methane data visualizations'),
              dcc.Dropdown(
                 id='county-dropdown',
-                options=[{'label': STATEFP, 'value': STATEFP} for STATEFP in df_county['STATEFP'].unique()],
+                options=[{'label': StateName, 'value': StateName} for StateName in sorted(df_county['StateName'].unique())],
                 value=None,
-                placeholder='Select a county',
+                placeholder='Select a state',
                 style={'width': '200px', 'margin-bottom': '20px'}
             ),
             dcc.Graph(
                 id='scatter-plot'
             )
+])
 #       dcc.Graph(id='Methane Stripes', figure=fig)
         ])
 #    elif tab == 'tab-3':
@@ -874,9 +894,9 @@ def update_scatter_plot(selected_county):
     if selected_county is None:
         filtered_df = df_county
     else:
-        filtered_df = df_county[df_county['STATEFP'] == selected_county]
+        filtered_df = df_county[df_county['StateName'] == selected_county]
 
-    fig5 = px.scatter(filtered_df, x='date', y='ch4', color='ch4', trendline='lowess')
+    fig5 = px.scatter(filtered_df, x='date', y='ch4', color='ch4', trendline='lowess', range_color=[df_county['ch4'].min(), df_county['ch4'].max()])
     fig5.update_traces(marker=dict(size=5))
     fig5.update_layout(
         xaxis_title='Year',
