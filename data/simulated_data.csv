@@ -1,142 +1,148 @@
-"","company_name","number_of_employees","fossil_fuel_type","extraction_or_processing","number_of_beds","previous_leaks_n","plant_or_hospital","longitude","latitude"
-"1","Bards and Tennets",7265,"Natural gas","Extraction","NA","1","Energy plant",-149,69
-"2","Bards and Tennets",7996,"Natural gas","Extraction","NA","17","Energy plant",-101,46
-"3","Bards and Tennets",8815,"Oil","Processing","NA","3","Energy plant",-99,28
-"4","BUB Energy",6016,"Coal","Extraction","NA","15","Energy plant",-153,67
-"5","BUB Energy",7538,"Oil","Extraction","NA","7","Energy plant",-97,38
-"6","BUB Energy",8254,"Natural gas","Processing","NA","17","Energy plant",-83,30
-"7","BUB Energy",9256,"Coal","Extraction","NA","10","Energy plant",-75,44
-"8","BUB Energy",9322,"Natural gas","Extraction","NA","20","Energy plant",-93,32
-"9","BUB Energy",9716,"Oil","Extraction","NA","14","Energy plant",-116,39
-"10","Capital Health",1470,"NA","NA","1803","NA","Hospital",-76,38
-"11","Capital Health",5588,"NA","NA","1748","NA","Hospital",-145,67
-"12","Capital Health",6181,"NA","NA","1816","NA","Hospital",-156,66
-"13","Capital Health",7568,"NA","NA","575","NA","Hospital",-79,42
-"14","Capital Health",7887,"NA","NA","1974","NA","Hospital",-87,34
-"15","CaroCare",5581,"NA","NA","1838","NA","Hospital",-80,41
-"16","CaroCare",6011,"NA","NA","1822","NA","Hospital",-120,46
-"17","Charity Trust",1324,"NA","NA","1772","NA","Hospital",-105,34
-"18","Charity Trust",242,"NA","NA","1072","NA","Hospital",-162,60
-"19","Charity Trust",8082,"NA","NA","1632","NA","Hospital",-92,44
-"20","Charity Trust",8940,"NA","NA","304","NA","Hospital",-117,41
-"21","COYG",4751,"Oil","Processing","NA","20","Energy plant",-85,37
-"22","COYG",6021,"Coal","Extraction","NA","8","Energy plant",-119,37
-"23","Cruxx",1569,"Oil","Extraction","NA","11","Energy plant",-97,42
-"24","Cruxx",1710,"Natural gas","Extraction","NA","10","Energy plant",-98,38
-"25","Cruxx",2106,"Coal","Processing","NA","13","Energy plant",-98,42
-"26","Cruxx",4197,"Coal","Processing","NA","4","Energy plant",-76,44
-"27","Cruxx",5463,"Natural gas","Processing","NA","2","Energy plant",-84,32
-"28","Cruxx",5759,"Natural gas","Extraction","NA","8","Energy plant",-122,46
-"29","Cruxx",8356,"Oil","Processing","NA","2","Energy plant",-103,36
-"30","Cruxx",9878,"Natural gas","Extraction","NA","10","Energy plant",-116,38
-"31","Devo Minds",2058,"Natural gas","Processing","NA","4","Energy plant",-85,34
-"32","Devo Minds",2848,"Oil","Extraction","NA","17","Energy plant",-93,38
-"33","Devo Minds",3241,"Oil","Processing","NA","8","Energy plant",-161,66
-"34","Devo Minds",3371,"Natural gas","Extraction","NA","3","Energy plant",-97,33
-"35","Devo Minds",8716,"Natural gas","Extraction","NA","11","Energy plant",-117,35
-"36","Healthy co",1975,"NA","NA","1220","NA","Hospital",-86,47
-"37","Healthy co",2579,"NA","NA","905","NA","Hospital",-84,34
-"38","Healthy co",3842,"NA","NA","1729","NA","Hospital",-118,41
-"39","Healthy co",3929,"NA","NA","1539","NA","Hospital",-83,33
-"40","Healthy co",445,"NA","NA","1924","NA","Hospital",-116,40
-"41","Healthy co",5706,"NA","NA","1978","NA","Hospital",-150,67
-"42","Healthy co",7734,"NA","NA","1175","NA","Hospital",-95,37
-"43","Healthy co",9093,"NA","NA","1726","NA","Hospital",-84,35
-"44","Hospice Caring Ltd",2470,"NA","NA","722","NA","Hospital",-115,47
-"45","Hospice Caring Ltd",3218,"NA","NA","1836","NA","Hospital",-101,44
-"46","Hospice Caring Ltd",5846,"NA","NA","1458","NA","Hospital",-97,34
-"47","Hospice Caring Ltd",8127,"NA","NA","309","NA","Hospital",-159,66
-"48","Hospice Caring Ltd",8335,"NA","NA","317","NA","Hospital",-110,36
-"49","Hospice Caring Ltd",8726,"NA","NA","351","NA","Hospital",-97,38
-"50","Hospice Caring Ltd",9321,"NA","NA","346","NA","Hospital",-108,37
-"51","Jeans and co",3517,"Oil","Extraction","NA","9","Energy plant",-97,35
-"52","Jeans and co",4173,"Coal","Extraction","NA","15","Energy plant",-142,63
-"53","Jeans and co",8397,"Natural gas","Extraction","NA","10","Energy plant",-158,57
-"54","Jeans and co",9175,"Coal","Extraction","NA","9","Energy plant",-145,68
-"55","Kind",2418,"NA","NA","428","NA","Hospital",-120,36
-"56","Kind",5014,"NA","NA","1582","NA","Hospital",-123,41
-"57","Leex",1139,"Oil","Processing","NA","14","Energy plant",-102,30
-"58","Lo-Care",2488,"NA","NA","1094","NA","Hospital",-93,38
-"59","Lo-Care",2812,"NA","NA","1847","NA","Hospital",-106,33
-"60","Lo-Care",6901,"NA","NA","507","NA","Hospital",-117,40
-"61","LTF",1933,"Natural gas","Processing","NA","6","Energy plant",-115,36
-"62","LTF",4637,"Coal","Extraction","NA","15","Energy plant",-80,38
-"63","LTF",5512,"Natural gas","Extraction","NA","6","Energy plant",-157,67
-"64","LTF",7632,"Coal","Extraction","NA","0","Energy plant",-144,66
-"65","LTF",9793,"Coal","Extraction","NA","9","Energy plant",-86,31
-"66","Med-linus",1601,"NA","NA","689","NA","Hospital",-117,39
-"67","Med-linus",4531,"NA","NA","1428","NA","Hospital",-121,43
-"68","Med-linus",5407,"NA","NA","907","NA","Hospital",-82,35
-"69","Med-linus",7845,"NA","NA","751","NA","Hospital",-157,67
-"70","Med-linus",9988,"NA","NA","1251","NA","Hospital",-99,31
-"71","Nations Health",205,"NA","NA","1264","NA","Hospital",-90,42
-"72","Nations Health",4874,"NA","NA","933","NA","Hospital",-83,33
-"73","Nations Health",7223,"NA","NA","1066","NA","Hospital",-124,47
-"74","Nations Health",7571,"NA","NA","567","NA","Hospital",-105,32
-"75","Nations Health",9667,"NA","NA","1885","NA","Hospital",-113,40
-"76","Nations Health",9919,"NA","NA","1754","NA","Hospital",-99,40
-"77","North West Health",1454,"NA","NA","654","NA","Hospital",-151,68
-"78","North West Health",1505,"NA","NA","681","NA","Hospital",-119,48
-"79","North West Health",5058,"NA","NA","727","NA","Hospital",-164,63
-"80","North West Health",671,"NA","NA","991","NA","Hospital",-142,63
-"81","North West Health",702,"NA","NA","930","NA","Hospital",-85,41
-"82","North West Health",8247,"NA","NA","1056","NA","Hospital",-147,64
-"83","North West Health",9601,"NA","NA","1127","NA","Hospital",-147,68
-"84","Nuffsons Health",3871,"NA","NA","1015","NA","Hospital",-110,46
-"85","Nuffsons Health",4850,"NA","NA","1881","NA","Hospital",-157,58
-"86","Nuffsons Health",8324,"NA","NA","1797","NA","Hospital",-92,34
-"87","Reves ltd",2115,"Natural gas","Processing","NA","9","Energy plant",-106,38
-"88","Reves ltd",252,"Natural gas","Extraction","NA","8","Energy plant",-97,38
-"89","Reves ltd",3841,"Oil","Extraction","NA","19","Energy plant",-145,64
-"90","Reves ltd",8312,"Natural gas","Extraction","NA","7","Energy plant",-113,34
-"91","Reves ltd",8901,"Natural gas","Processing","NA","16","Energy plant",-101,45
-"92","Seets Independent",1167,"Oil","Processing","NA","11","Energy plant",-83,38
-"93","Seets Independent",2437,"Natural gas","Extraction","NA","0","Energy plant",-82,32
-"94","Seets Independent",2890,"Coal","Extraction","NA","14","Energy plant",-98,34
-"95","Seets Independent",3563,"Natural gas","Processing","NA","1","Energy plant",-116,41
-"96","Seets Independent",4779,"Natural gas","Extraction","NA","13","Energy plant",-109,47
-"97","Seets Independent",7496,"Natural gas","Extraction","NA","3","Energy plant",-83,31
-"98","Spyte",3280,"Oil","Extraction","NA","18","Energy plant",-152,65
-"99","Spyte",5953,"Oil","Processing","NA","13","Energy plant",-159,63
-"100","Spyte",6254,"Coal","Processing","NA","4","Energy plant",-92,39
-"101","Spyte",8490,"Natural gas","Extraction","NA","5","Energy plant",-96,36
-"102","STV Health",1256,"NA","NA","1638","NA","Hospital",-76,40
-"103","STV Health",1338,"NA","NA","1368","NA","Hospital",-79,34
-"104","STV Health",2782,"NA","NA","1306","NA","Hospital",-116,48
-"105","STV Health",3690,"NA","NA","554","NA","Hospital",-75,43
-"106","STV Health",6158,"NA","NA","1436","NA","Hospital",-101,42
-"107","Tinted",6687,"Natural gas","Extraction","NA","13","Energy plant",-102,44
-"108","Tinted",6830,"Natural gas","Extraction","NA","19","Energy plant",-107,48
-"109","Tinted",6982,"Coal","Extraction","NA","12","Energy plant",-103,36
-"110","Tinted",7231,"Oil","Processing","NA","19","Energy plant",-86,36
-"111","Tinted",8000,"Natural gas","Extraction","NA","2","Energy plant",-118,37
-"112","Tinted",9582,"Natural gas","Processing","NA","12","Energy plant",-118,37
-"113","Tinted",9944,"Oil","Extraction","NA","18","Energy plant",-92,32
-"114","Trusted Lab co",2336,"NA","NA","291","NA","Hospital",-90,37
-"115","Trusted Lab co",4939,"NA","NA","321","NA","Hospital",-79,35
-"116","Trusted Lab co",6432,"NA","NA","167","NA","Hospital",-111,38
-"117","Unique Oil",2450,"Oil","Processing","NA","7","Energy plant",-97,46
-"118","Unique Oil",2789,"Oil","Processing","NA","20","Energy plant",-80,39
-"119","Unique Oil",5180,"Oil","Extraction","NA","15","Energy plant",-82,39
-"120","Unique Oil",8494,"Natural gas","Processing","NA","10","Energy plant",-99,34
-"121","Unique Oil",8496,"Coal","Processing","NA","15","Energy plant",-110,40
-"122","Unique Oil",8727,"Oil","Extraction","NA","1","Energy plant",-98,42
-"123","Unique Oil",9241,"Coal","Extraction","NA","0","Energy plant",-93,40
-"124","Well-care One",2737,"NA","NA","1599","NA","Hospital",-84,36
-"125","Well-care One",3352,"NA","NA","1974","NA","Hospital",-99,42
-"126","Well-care One",438,"NA","NA","1611","NA","Hospital",-86,45
-"127","Well-care One",5737,"NA","NA","990","NA","Hospital",-90,44
-"128","Well-care One",6182,"NA","NA","380","NA","Hospital",-77,35
-"129","Well-care One",6363,"NA","NA","1069","NA","Hospital",-84,36
-"130","Well-care One",8930,"NA","NA","1797","NA","Hospital",-119,36
-"131","Well Foundation",424,"NA","NA","384","NA","Hospital",-115,48
-"132","Well Foundation",4712,"NA","NA","480","NA","Hospital",-143,69
-"133","Well Foundation",5215,"NA","NA","1108","NA","Hospital",-142,61
-"134","Well Foundation",8241,"NA","NA","1347","NA","Hospital",-92,31
-"135","Woodward",6042,"Coal","Processing","NA","6","Energy plant",-145,62
-"136","Woodward",8514,"Natural gas","Extraction","NA","10","Energy plant",-98,32
-"137","Xeros",4968,"Oil","Processing","NA","7","Energy plant",-116,46
-"138","Xeros",6808,"Coal","Processing","NA","14","Energy plant",-93,42
-"139","Xeros",811,"Coal","Extraction","NA","15","Energy plant",-78,49
-"140","Xeros",811,"Coal","Extraction","NA","15","Energy plant",-108,36
-"141","Xeros",9321,"Natural gas","Extraction","NA","12","Energy plant",-88,42
+"","company_name","number_of_employees","fossil_fuel_type","extraction_or_processing","number_of_beds","previous_leaks_n","phone_number","longitude","latitude"
+"1","Bards and Tennets",7265,"Natural gas","Extraction","NA","1","(869)- 624- 2974",-149,69
+"2","Bards and Tennets",7996,"Natural gas","Extraction","NA","17","(458)- 926- 3647",-101,46
+"3","Bards and Tennets",8815,"Oil","Processing","NA","3","(135)- 796- 3597",-99,28
+"4","BUB Energy",6016,"Coal","Extraction","NA","15","(918)- 465- 7412",-153,67
+"5","BUB Energy",7538,"Oil","Extraction","NA","7","(923)- 634- 4861",-97,38
+"6","BUB Energy",8254,"Natural gas","Processing","NA","17","(157)- 194- 5142",-83,30
+"7","BUB Energy",9256,"Coal","Extraction","NA","10","(649)- 452- 9748",-75,44
+"8","BUB Energy",9322,"Natural gas","Extraction","NA","20","(387)- 674- 5431",-93,32
+"9","BUB Energy",9716,"Oil","Extraction","NA","14","(561)- 281- 7215",-116,39
+"10","Capital Health",1256,"NA","NA","740","NA","(256)- 743- 4396",-94,44
+"11","Capital Health",1321,"NA","NA","584","NA","(162)- 863- 8742",-92,41
+"12","Capital Health",1549,"NA","NA","726","NA","(875)- 921- 5216",-108,38
+"13","Capital Health",5436,"NA","NA","478","NA","(715)- 738- 4918",-143,63
+"14","Capital Health",5676,"NA","NA","116","NA","(165)- 864- 2965",-89,38
+"15","Capital Health",7247,"NA","NA","1680","NA","(498)- 613- 2193",-149,67
+"16","Capital Health",8113,"NA","NA","922","NA","(524)- 534- 3196",-90,45
+"17","CaroCare",2069,"NA","NA","1869","NA","(142)- 936- 4568",-166,66
+"18","CaroCare",5900,"NA","NA","1056","NA","(596)- 648- 4796",-91,48
+"19","CaroCare",6401,"NA","NA","726","NA","(843)- 943- 9527",-146,68
+"20","CaroCare",6773,"NA","NA","996","NA","(147)- 684- 3715",-118,38
+"21","CaroCare",7498,"NA","NA","300","NA","(594)- 387- 9654",-103,48
+"22","CaroCare",8486,"NA","NA","1156","NA","(689)- 524- 6598",-119,43
+"23","CaroCare",9943,"NA","NA","1631","NA","(785)- 216- 3496",-102,31
+"24","Charity Trust",1131,"NA","NA","718","NA","(495)- 128- 3821",-110,42
+"25","Charity Trust",1878,"NA","NA","1045","NA","(825)- 856- 2914",-146,61
+"26","Charity Trust",2302,"NA","NA","1000","NA","(845)- 925- 9127",-119,46
+"27","Charity Trust",2613,"NA","NA","92","NA","(953)- 187- 7534",-109,39
+"28","Charity Trust",5022,"NA","NA","1492","NA","(932)- 923- 2934",-89,48
+"29","Charity Trust",8839,"NA","NA","652","NA","(514)- 736- 6258",-90,32
+"30","Charity Trust",8858,"NA","NA","799","NA","(416)- 152- 2796",-154,63
+"31","COYG",4751,"Oil","Processing","NA","20","(651)- 815- 8432",-85,37
+"32","COYG",6021,"Coal","Extraction","NA","8","(314)- 561- 7369",-119,37
+"33","Cruxx",1569,"Oil","Extraction","NA","11","(329)- 861- 6259",-97,42
+"34","Cruxx",1710,"Natural gas","Extraction","NA","10","(532)- 123- 2547",-98,38
+"35","Cruxx",2106,"Coal","Processing","NA","13","(296)- 971- 5479",-98,42
+"36","Cruxx",4197,"Coal","Processing","NA","4","(736)- 638- 8564",-76,44
+"37","Cruxx",5463,"Natural gas","Processing","NA","2","(532)- 945- 3148",-84,32
+"38","Cruxx",5759,"Natural gas","Extraction","NA","8","(894)- 135- 6487",-122,46
+"39","Cruxx",8356,"Oil","Processing","NA","2","(916)- 946- 2841",-103,36
+"40","Cruxx",9878,"Natural gas","Extraction","NA","10","(369)- 397- 2941",-116,38
+"41","Devo Minds",2058,"Natural gas","Processing","NA","4","(316)- 839- 5864",-85,34
+"42","Devo Minds",2848,"Oil","Extraction","NA","17","(526)- 289- 9824",-93,38
+"43","Devo Minds",3241,"Oil","Processing","NA","8","(514)- 231- 8374",-161,66
+"44","Devo Minds",3371,"Natural gas","Extraction","NA","3","(689)- 953- 1896",-97,33
+"45","Devo Minds",8716,"Natural gas","Extraction","NA","11","(428)- 789- 3286",-117,35
+"46","Healthy co",1092,"NA","NA","1843","NA","(329)- 973- 9641",-100,34
+"47","Healthy co",275,"NA","NA","1727","NA","(986)- 975- 1658",-120,40
+"48","Healthy co",3508,"NA","NA","1360","NA","(197)- 493- 3216",-86,42
+"49","Healthy co",7139,"NA","NA","1719","NA","(519)- 376- 5798",-82,35
+"50","Healthy co",7492,"NA","NA","260","NA","(326)- 915- 7846",-118,35
+"51","Hospice Caring Ltd",1480,"NA","NA","272","NA","(723)- 197- 5418",-140,60
+"52","Hospice Caring Ltd",3567,"NA","NA","1226","NA","(591)- 689- 8645",-115,48
+"53","Hospice Caring Ltd",5127,"NA","NA","120","NA","(329)- 987- 9512",-98,32
+"54","Hospice Caring Ltd",5484,"NA","NA","1332","NA","(142)- 916- 8134",-149,66
+"55","Hospice Caring Ltd",6260,"NA","NA","1420","NA","(823)- 517- 1649",-90,31
+"56","Hospice Caring Ltd",6847,"NA","NA","1571","NA","(517)- 193- 6413",-110,32
+"57","Hospice Caring Ltd",8537,"NA","NA","1832","NA","(954)- 793- 4975",-157,67
+"58","Hospice Caring Ltd",8811,"NA","NA","1713","NA","(574)- 153- 7814",-81,37
+"59","Jeans and co",3517,"Oil","Extraction","NA","9","(295)- 649- 6285",-97,35
+"60","Jeans and co",4173,"Coal","Extraction","NA","15","(234)- 358- 8736",-142,63
+"61","Jeans and co",8397,"Natural gas","Extraction","NA","10","(769)- 423- 2496",-158,57
+"62","Jeans and co",9175,"Coal","Extraction","NA","9","(645)- 527- 5273",-145,68
+"63","Kind",5785,"NA","NA","708","NA","(374)- 792- 6928",-117,38
+"64","Leex",1139,"Oil","Processing","NA","14","(798)- 172- 9815",-102,30
+"65","Lo-Care",1208,"NA","NA","527","NA","(295)- 451- 9587",-143,70
+"66","Lo-Care",5499,"NA","NA","1677","NA","(931)- 452- 2418",-147,70
+"67","Lo-Care",8666,"NA","NA","289","NA","(574)- 879- 3248",-76,44
+"68","Lo-Care",9808,"NA","NA","1859","NA","(437)- 237- 9384",-83,44
+"69","Lo-Care",9937,"NA","NA","824","NA","(913)- 713- 9526",-91,48
+"70","LTF",1933,"Natural gas","Processing","NA","6","(175)- 123- 8954",-115,36
+"71","LTF",4637,"Coal","Extraction","NA","15","(827)- 139- 7591",-80,38
+"72","LTF",5512,"Natural gas","Extraction","NA","6","(175)- 469- 9871",-157,67
+"73","LTF",7632,"Coal","Extraction","NA","0","(127)- 287- 9572",-144,66
+"74","LTF",9793,"Coal","Extraction","NA","9","(296)- 376- 5174",-86,31
+"75","Med-linus",1969,"NA","NA","1860","NA","(516)- 213- 7923",-157,59
+"76","Med-linus",3674,"NA","NA","496","NA","(367)- 785- 5326",-78,35
+"77","Med-linus",4087,"NA","NA","394","NA","(968)- 513- 6482",-156,64
+"78","Med-linus",5176,"NA","NA","134","NA","(293)- 419- 4689",-94,30
+"79","Med-linus",5362,"NA","NA","817","NA","(168)- 814- 3198",-97,30
+"80","Med-linus",6575,"NA","NA","1578","NA","(826)- 856- 8671",-94,46
+"81","Med-linus",7610,"NA","NA","514","NA","(879)- 892- 4372",-104,44
+"82","Med-linus",9794,"NA","NA","381","NA","(823)- 491- 2197",-123,43
+"83","Nations Health",4376,"NA","NA","1685","NA","(568)- 264- 9127",-99,33
+"84","Nations Health",5024,"NA","NA","1001","NA","(654)- 146- 6849",-87,44
+"85","Nations Health",588,"NA","NA","547","NA","(123)- 986- 8125",-164,60
+"86","Nations Health",6397,"NA","NA","834","NA","(685)- 198- 1249",-143,67
+"87","Nations Health",8217,"NA","NA","679","NA","(629)- 687- 4268",-144,69
+"88","Nations Health",8235,"NA","NA","1993","NA","(614)- 592- 4965",-143,66
+"89","Nations Health",8939,"NA","NA","192","NA","(539)- 136- 1738",-162,68
+"90","Nations Health",949,"NA","NA","393","NA","(972)- 834- 3716",-144,62
+"91","North West Health",2162,"NA","NA","689","NA","(832)- 681- 8239",-90,44
+"92","North West Health",2389,"NA","NA","788","NA","(691)- 453- 9246",-97,34
+"93","North West Health",6299,"NA","NA","1688","NA","(279)- 196- 3624",-153,58
+"94","Nuffsons Health",2937,"NA","NA","64","NA","(965)- 238- 7528",-92,32
+"95","Nuffsons Health",5082,"NA","NA","649","NA","(279)- 713- 7241",-90,40
+"96","Nuffsons Health",9157,"NA","NA","1396","NA","(689)- 679- 4812",-157,65
+"97","Reves ltd",2115,"Natural gas","Processing","NA","9","(297)- 693- 8596",-106,38
+"98","Reves ltd",252,"Natural gas","Extraction","NA","8","(435)- 863- 6239",-97,38
+"99","Reves ltd",3841,"Oil","Extraction","NA","19","(296)- 481- 1853",-145,64
+"100","Reves ltd",8312,"Natural gas","Extraction","NA","7","(391)- 351- 4956",-113,34
+"101","Reves ltd",8901,"Natural gas","Processing","NA","16","(269)- 618- 9172",-101,45
+"102","Seets Independent",1167,"Oil","Processing","NA","11","(973)- 452- 1389",-83,38
+"103","Seets Independent",2437,"Natural gas","Extraction","NA","0","(295)- 384- 2765",-82,32
+"104","Seets Independent",2890,"Coal","Extraction","NA","14","(293)- 945- 4217",-98,34
+"105","Seets Independent",3563,"Natural gas","Processing","NA","1","(357)- 267- 4231",-116,41
+"106","Seets Independent",4779,"Natural gas","Extraction","NA","13","(317)- 728- 1846",-109,47
+"107","Seets Independent",7496,"Natural gas","Extraction","NA","3","(691)- 683- 5647",-83,31
+"108","Spyte",3280,"Oil","Extraction","NA","18","(745)- 482- 6342",-152,65
+"109","Spyte",5953,"Oil","Processing","NA","13","(493)- 246- 8923",-159,63
+"110","Spyte",6254,"Coal","Processing","NA","4","(315)- 964- 2847",-92,39
+"111","Spyte",8490,"Natural gas","Extraction","NA","5","(291)- 534- 6835",-96,36
+"112","STV Health",357,"NA","NA","730","NA","(968)- 643- 6423",-105,46
+"113","Tinted",6687,"Natural gas","Extraction","NA","13","(562)- 432- 6983",-102,44
+"114","Tinted",6830,"Natural gas","Extraction","NA","19","(651)- 476- 8657",-107,48
+"115","Tinted",6982,"Coal","Extraction","NA","12","(413)- 692- 5169",-103,36
+"116","Tinted",7231,"Oil","Processing","NA","19","(257)- 862- 9386",-86,36
+"117","Tinted",8000,"Natural gas","Extraction","NA","2","(758)- 284- 3156",-118,37
+"118","Tinted",9582,"Natural gas","Processing","NA","12","(496)- 312- 8257",-118,37
+"119","Tinted",9944,"Oil","Extraction","NA","18","(578)- 479- 6421",-92,32
+"120","Trusted Lab co",1731,"NA","NA","1900","NA","(839)- 958- 6493",-106,46
+"121","Trusted Lab co",4637,"NA","NA","834","NA","(174)- 698- 5716",-92,32
+"122","Trusted Lab co",5150,"NA","NA","753","NA","(916)- 651- 2871",-95,46
+"123","Trusted Lab co",990,"NA","NA","1323","NA","(195)- 185- 7594",-144,62
+"124","Trusted Lab co",9929,"NA","NA","926","NA","(682)- 912- 1892",-78,42
+"125","Unique Oil",2450,"Oil","Processing","NA","7","(152)- 234- 1782",-97,46
+"126","Unique Oil",2789,"Oil","Processing","NA","20","(258)- 267- 9243",-80,39
+"127","Unique Oil",5180,"Oil","Extraction","NA","15","(165)- 273- 9781",-82,39
+"128","Unique Oil",8494,"Natural gas","Processing","NA","10","(769)- 967- 9713",-99,34
+"129","Unique Oil",8496,"Coal","Processing","NA","15","(869)- 583- 4823",-110,40
+"130","Unique Oil",8727,"Oil","Extraction","NA","1","(589)- 158- 8516",-98,42
+"131","Unique Oil",9241,"Coal","Extraction","NA","0","(862)- 456- 8739",-93,40
+"132","Well-care One",2671,"NA","NA","1229","NA","(912)- 572- 5394",-147,65
+"133","Well-care One",3014,"NA","NA","963","NA","(754)- 458- 8279",-113,34
+"134","Well-care One",7023,"NA","NA","1980","NA","(612)- 732- 5297",-100,47
+"135","Well-care One",7503,"NA","NA","1648","NA","(178)- 923- 3942",-100,29
+"136","Well-care One",8992,"NA","NA","1255","NA","(329)- 498- 8596",-91,36
+"137","Well-care One",8999,"NA","NA","302","NA","(439)- 659- 8257",-116,47
+"138","Well-care One",9759,"NA","NA","1585","NA","(287)- 726- 7542",-91,36
+"139","Well-care One",9913,"NA","NA","1384","NA","(691)- 961- 1835",-99,46
+"140","Well Foundation",4895,"NA","NA","1187","NA","(295)- 563- 1976",-133,56
+"141","Woodward",6042,"Coal","Processing","NA","6","(695)- 459- 1493",-145,62
+"142","Woodward",8514,"Natural gas","Extraction","NA","10","(459)- 457- 2519",-98,32
+"143","Xeros",4968,"Oil","Processing","NA","7","(928)- 957- 5687",-116,46
+"144","Xeros",6808,"Coal","Processing","NA","14","(726)- 243- 5163",-93,42
+"145","Xeros",811,"Coal","Extraction","NA","15","(459)- 328- 7928",-78,49
+"146","Xeros",811,"Coal","Extraction","NA","15","(459)- 328- 7928",-108,36
+"147","Xeros",9321,"Natural gas","Extraction","NA","12","(143)- 296- 4786",-88,42
