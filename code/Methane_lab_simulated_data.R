@@ -35,10 +35,10 @@ set.seed(4321)
 
 ####Processing plants####
 
-x <- -124.00:-66.00
+x <- -200.00:-66.00
 longitude = sample(x, 300, replace=T)
 
-x <- 27:48
+x <- 27:80
 latitude = sample(x, 300, replace=T)
 
 x <- c("LTF", "Xeros", "Spyte", "Jeans and co", "Woodward", "Reves ltd", "Cruxx",
@@ -75,17 +75,15 @@ df = data.frame(
 
 #library(mapview)
 
-#mapview(df, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE, 
-#          label = df$company_name, layer.name = "Fossil fuel type",
-#                       zcol = "fossil_fuel_type", legend=T)
+mapview(df_filtered, xcol = "longitude", ycol = "latitude", crs = 4269, grid = FALSE)
 
 
 ####Hospitals####
 
-x <- -124.00:-66.00
+x <- -200.00:-66.00
 longitude = sample(x, 300, replace=T)
 
-x <- 27:48
+x <- 27:85
 latitude = sample(x, 300, replace=T)
 
 x <- c("Hospice Caring Ltd", "Healthy co", "CaroCare", "Lo-Care", "Well-care One", 
@@ -122,7 +120,43 @@ df2 = data.frame(
 
 df <- rbind(df, df2)
 
+#write.csv(df, 'C:/Users/bengo/OneDrive/Documents/GitHub/Climate_Coders/data/simulated_data.csv')
+
+
+# Install the rnaturalearth package if you haven't already
+#install.packages("rnaturalearth")
+
+# Load the package
+library(rnaturalearth)
+library(sf)
+
+# Download the shapefile for the USA
+usa <- ne_download(category = "countries", type = "united states")
+
+usa<- ne_countries(country = "United States of America", scale = "large")
+
+# Read the shapefile into R
+usa_shapefile <- st_as_sf(usa)
+
+library(sf)
+df_sf <- st_as_sf(df, coords = c("longitude", "latitude"), crs = st_crs(usa_shapefile))
+
+# Perform spatial intersection to keep only the rows within the USA shapefile
+df_filtered <- st_intersection(df_sf, usa_shapefile)
+
+
+
+df_filtered <- as.data.frame(df_filtered[c(1:7)])%>% dplyr::select(-geometry)
+
+df <- merge(df_filtered, df[c("company_name", "number_of_employees", "longitude", "latitude" )], 
+            by=c("company_name", "number_of_employees"), all.x=T)
+
 write.csv(df, 'C:/Users/bengo/OneDrive/Documents/GitHub/Climate_Coders/data/simulated_data.csv')
+
+
+
+
+
 
 
 

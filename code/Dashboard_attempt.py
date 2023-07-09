@@ -152,89 +152,41 @@ from scipy.spatial.distance import cdist
 import numpy as np
 
 hospitals = simulated[simulated['plant_or_hospital'] == "Hospital"]
+hospitals = hospitals.rename(columns={'latitude': 'lat'})
+hospitals = hospitals.rename(columns={'longitude': 'lon'})
+
 energy_plants = simulated[simulated['plant_or_hospital'] == "Energy plant"]
+energy_plants = energy_plants.rename(columns={'latitude': 'lat'})
+energy_plants = energy_plants.rename(columns={'longitude': 'lon'})
 
 import plotly.graph_objects as go
 import plotly.express as px
 import numpy as np
 from scipy.spatial import cKDTree
 
+
+df_sorted = mean_ch4.sort_values('ch4', ascending=False)
+
+# Calculate the number of rows representing the top 10%
+top_10_percent = int(len(df_sorted) * 0.1)
+
+# Slice the DataFrame to keep only the top rows
+top_10_df = df_sorted.head(top_10_percent)
+
+min_value = top_10_df['ch4'].min()
+max_value = top_10_df['ch4'].max()
+scaled_values = ((top_10_df['ch4'] - min_value) / (max_value - min_value)) ** 1.2 * 15
+
+
 # Create the scatter plot with scaled point sizes
-fig2 = px.scatter_mapbox(mean_ch4, lat="lat_m", lon="lon_m", hover_name="ch4",
-                         color="ch4", size=scaled_values,
+fig2 = px.scatter_mapbox(top_10_df, lat="lat_m", lon="lon_m", hover_name="ch4",
+                         size=scaled_values,
                          color_continuous_scale='viridis',
                          mapbox_style="carto-positron",
                          zoom=3,
                          center={'lat': 39.8283, 'lon': -98.5795},
-                         opacity=0.8, size_max=15)
+                         opacity=0.8, size_max=30)
 
-# Create a KD-tree for hospitals and energy plants
-hospital_tree = cKDTree(hospitals[['latitude', 'longitude']])
-energy_plant_tree = cKDTree(energy_plants[['latitude', 'longitude']])
-
-def find_nearest_point(tree, lat, lon):
-    _, index = tree.query([lat, lon])
-    return index
-
-def highlight_nearest_hospital_energy_plant(trace, points, selector):
-    # Get the coordinates of the clicked point
-    lat = trace.lat[points.point_inds[0]]
-    lon = trace.lon[points.point_inds[0]]
-    
-    # Find the nearest hospital and energy plant
-    nearest_hospital_index = find_nearest_point(hospital_tree, lat, lon)
-    nearest_energy_plant_index = find_nearest_point(energy_plant_tree, lat, lon)
-    
-    # Get the company names of the nearest hospital and energy plant
-    nearest_hospital_name = hospitals.iloc[nearest_hospital_index]['company_name']
-    nearest_energy_plant_name = energy_plants.iloc[nearest_energy_plant_index]['company_name']
-    
-    # Update the trace to highlight the nearest hospital and energy plant
-    fig2.data[1].selectedpoints = [nearest_hospital_index]
-    fig2.data[2].selectedpoints = [nearest_energy_plant_index]
-    
-    # Update the hovertext to show the company names
-    fig2.data[1].hovertext = hospitals['company_name']
-    fig2.data[2].hovertext = energy_plants['company_name']
-    
-    # Print the company names
-    print("Nearest Hospital: ", nearest_hospital_name)
-    print("Nearest Energy Plant: ", nearest_energy_plant_name)
-
-# Add click event handler to the 'mean_ch4' trace
-fig2.data[0].on_click(highlight_nearest_hospital_energy_plant)
-
-fig2.add_trace(go.Scattermapbox(
-    lat=hospitals['latitude'],
-    lon=hospitals['longitude'],
-    mode='markers',
-    marker=dict(
-        size=10,
-        opacity=0.8
-    ),
-    hoverinfo='text',
-    hovertext=hospitals['company_name'],
-    name='Hospitals',
-    selected=dict(marker=dict(opacity=1))
-))
-
-fig2.add_trace(go.Scattermapbox(
-    lat=energy_plants['latitude'],
-    lon=energy_plants['longitude'],
-    mode='markers',
-    marker=dict(
-        size=10,
-        opacity=0.8
-    ),
-    hoverinfo='text',
-    hovertext=energy_plants['company_name'],
-    name='Energy plant',
-    selected=dict(marker=dict(opacity=1))
-))
-
-fig2.update_layout(clickmode='event+select')
-
-fig2.show()
 
 
 
@@ -670,7 +622,7 @@ def render_page_1_content(tab):
     if tab == 'tab-1':
         return html.Div([
             html.H3('Map of Methane Levels, overlayed with energy plant and hospital locations'),
-            dcc.Graph(id='Methane Stripes', figure=fig2)
+            dcc.Graph(id='map')
         ])
     elif tab == 'tab-2':
         return html.Div([
@@ -696,9 +648,72 @@ def render_page_2_content(tab):
 
 
 
+def find_nearest_point(lat, lon, df):
+    point = np.array([[lat, lon]])
+    distances = cdist(point, df[['lat', 'lon']])
+    nearest_index = np.argmin(distances)
+    nearest_point = df.iloc[nearest_index]
+    return nearest_point
 
 
+@app.callback(Output('map', 'figure'), [Input('map', 'hoverData'), Input('map', 'clickData')])
+def update_nearest_hospital(hover_data, click_data):
+    if hover_data or click_data:
+        if hover_data:
+            point = hover_data['points'][0]
+        else:
+            point = click_data['points'][0]
 
+        lat = point['lat']
+        lon = point['lon']
+
+        nearest_hospital = find_nearest_point(lat, lon, hospitals)
+        nearest_energy_plant = find_nearest_point(lat, lon, energy_plants)
+
+        # Create a new figure with the nearest hospital and energy plant annotations
+        new_fig = go.Figure(fig2)
+        new_fig.add_trace(
+            go.Scattermapbox(
+                lat=[lat, nearest_hospital['lat']],
+                lon=[lon, nearest_hospital['lon']],
+                mode='lines',
+                line=dict(color='red', width=2),
+                hoverinfo='none'
+            )
+        )
+        new_fig.add_trace(
+            go.Scattermapbox(
+                lat=[lat, nearest_energy_plant['lat']],
+                lon=[lon, nearest_energy_plant['lon']],
+                mode='lines',
+                line=dict(color='blue', width=2),
+                hoverinfo='none'
+            )
+        )
+        new_fig.add_trace(
+            go.Scattermapbox(
+                lat=[nearest_hospital['lat']],
+                lon=[nearest_hospital['lon']],
+                mode='markers',
+                marker=dict(size=10, color='red'),
+                hoverinfo='text',
+                hovertext=nearest_hospital['company_name']  # Replace 'company_name' with the appropriate column name from the 'hospitals' dataframe
+            )
+        )
+        new_fig.add_trace(
+            go.Scattermapbox(
+                lat=[nearest_energy_plant['lat']],
+                lon=[nearest_energy_plant['lon']],
+                mode='markers',
+                marker=dict(size=10, color='blue'),
+                hoverinfo='text',
+                hovertext=nearest_energy_plant['company_name']  # Replace 'plant_name' with the appropriate column name from the 'energy_plants' dataframe
+            )
+        )
+
+        return new_fig
+
+    return fig2
 
 
 
