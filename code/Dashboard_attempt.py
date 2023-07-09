@@ -599,9 +599,9 @@ from datetime import datetime
 
 # Read the data
 df_daily = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_lonlat.csv')
-states = gpd.read_file('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/data/gadm36_USA_shp/gadm36_USA_1.shp')
+states = gpd.read_file('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/gadm36_USA_1.shp')
 
-FipsDF = pd.read_csv('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/data/fips2county.tsv', sep='\t', header='infer', dtype=str, encoding='latin-1')
+FipsDF = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/fips2county.tsv', sep='\t', header='infer', dtype=str, encoding='latin-1')
 StateAbbrDF = FipsDF[["StateAbbr", 'StateFIPS', "StateName"]].drop_duplicates()
 
 df_daily = pd.merge(df_daily, StateAbbrDF.astype({'StateFIPS': 'int64'}), left_on='STATEFP', right_on='StateFIPS', how='left')
