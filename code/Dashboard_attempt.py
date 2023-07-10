@@ -588,6 +588,67 @@ df_county = df_county.dropna(subset=['StateName'])
 
 ####map slider#####
 
+#import pandas as pd
+#import geopandas as gpd
+#import plotly.express as px
+#import plotly.graph_objects as go
+#import dash
+#import dash_core_components as dcc
+#import dash_html_components as html
+#from datetime import datetime
+
+# Read the data
+#df_daily = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_lonlat.csv')
+#states = gpd.read_file('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/gadm36_USA_1.shp')#
+
+#FipsDF = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/fips2county.tsv', sep='\t', header='infer', dtype=str, encoding='latin-1')
+#StateAbbrDF = FipsDF[["StateAbbr", 'StateFIPS', "StateName"]].drop_duplicates()
+
+#df_daily = pd.merge(df_daily, StateAbbrDF.astype({'StateFIPS': 'int64'}), left_on='STATEFP', right_on='StateFIPS', how='left')
+#df_daily['StateName'] = df_daily['StateName'].astype('object')
+#df_daily = df_daily.dropna(subset=['StateName'])
+
+# Filter and sample the data
+#df_daily['date'] = pd.to_datetime(df_daily['date'])
+#df_daily['day_of_year'] = df_daily['date'].dt.dayofyear
+#df_daily['week_of_year'] = df_daily['date'].dt.isocalendar().week
+
+#df_filtered = df_daily[df_daily['date'].dt.year == 2019]
+
+
+
+###############################################################################
+######### ALL OF CAROLIN's CREATE FIGURE STUFF ##############################################
+###############################################################################
+
+
+# Carolin create figure tab2: methane emissions over time with state drop down 
+
+import pandas as pd
+import plotly.express as px
+
+# Read the CSV file into a DataFrame
+tab2_df_county = pd.read_csv('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/final_csvs/methane_monthly_county.csv')
+
+df_county['date'] = pd.to_datetime(df_county['date'])
+
+
+# Convert 'date' column to datetime data type
+tab2_df_county['date'] = pd.to_datetime(tab2_df_county['date'])
+
+tab2_FipsDF = pd.read_csv('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/data/fips2county.tsv', sep='\t', header='infer', dtype=str, encoding='latin-1')
+tab2_StateAbbrDF = tab2_FipsDF[["StateAbbr", 'StateFIPS', "StateName"]].drop_duplicates()
+
+tab2_df_county = pd.merge(tab2_df_county, tab2_StateAbbrDF.astype({'StateFIPS': 'int64'}), left_on='STATEFP', right_on='StateFIPS', how='left')
+tab2_df_county['StateName'] = tab2_df_county['StateName'].astype('object')
+tab2_df_county = tab2_df_county.dropna(subset=['StateName'])
+
+tab2_df_county.head()
+
+
+
+# Carolin create figure tab3: US Map for leaks with a date slider 
+
 import pandas as pd
 import geopandas as gpd
 import plotly.express as px
@@ -597,24 +658,22 @@ import dash_core_components as dcc
 import dash_html_components as html
 from datetime import datetime
 
-# Read the data
-df_daily = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_lonlat.csv')
-states = gpd.read_file('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/gadm36_USA_1.shp')
+tab3_df_daily = pd.read_csv('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/final_csvs/methane_final_lonlat.csv')
+tab3_states = gpd.read_file('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/data/gadm36_USA_shp/gadm36_USA_1.shp')
 
-FipsDF = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/fips2county.tsv', sep='\t', header='infer', dtype=str, encoding='latin-1')
-StateAbbrDF = FipsDF[["StateAbbr", 'StateFIPS', "StateName"]].drop_duplicates()
+tab_3_FipsDF = pd.read_csv('/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/Projekte/Wellcome Ideathon/methane_processing/data/fips2county.tsv', sep='\t', header='infer', dtype=str, encoding='latin-1')
+tab3_StateAbbrDF = tab_3_FipsDF[["StateAbbr", 'StateFIPS', "StateName"]].drop_duplicates()
 
-df_daily = pd.merge(df_daily, StateAbbrDF.astype({'StateFIPS': 'int64'}), left_on='STATEFP', right_on='StateFIPS', how='left')
-df_daily['StateName'] = df_daily['StateName'].astype('object')
-df_daily = df_daily.dropna(subset=['StateName'])
+tab3_df_daily = pd.merge(tab3_df_daily, tab3_StateAbbrDF.astype({'StateFIPS': 'int64'}), left_on='STATEFP', right_on='StateFIPS', how='left')
+tab3_df_daily['StateName'] = tab3_df_daily['StateName'].astype('object')
+tab3_df_daily = tab3_df_daily.dropna(subset=['StateName'])
 
 # Filter and sample the data
-df_daily['date'] = pd.to_datetime(df_daily['date'])
-df_daily['day_of_year'] = df_daily['date'].dt.dayofyear
-df_daily['week_of_year'] = df_daily['date'].dt.isocalendar().week
+tab3_df_daily['date'] = pd.to_datetime(tab3_df_daily['date'])
+tab3_df_daily['day_of_year'] = tab3_df_daily['date'].dt.dayofyear
+tab3_df_daily['week_of_year'] = tab3_df_daily['date'].dt.isocalendar().week
 
-df_filtered = df_daily[df_daily['date'].dt.year == 2019]
-
+tab3_df_filtered = tab3_df_daily[tab3_df_daily['date'].dt.year == 2019]
 
 
 
@@ -826,7 +885,25 @@ def render_page_content(pathname):
             html.Div(id='page-2-tabs-content')
         ])
     elif pathname == "/page-3":
-        return html.P("List of resources and links to papers, articles, etc.")
+         return html.Div([
+            html.H3('Data Access'),
+            html.H6('Download methane and health data here:'),
+            html.Ul([
+                html.Li(html.A("Download Methane Data with latitude and longitude", href="https://BenGoodair.github.io/Methane_Dashboard/methane_final_lonlat.csv")),
+                html.Li(html.A("Download Health Data for US Counties", href="https://example.com/health_data.csv")),
+                html.Li(html.A("Download Health Data for US States", href="https://example.com/health_data.csv")),
+            ]),            
+            html.H3('Data notes and lincensing'),
+            html.H6('Definitions and terms of use'),
+            html.P('The Copernicus Climate Data Store provides satellite-collected methane data at the longitude and latitude level. In this tab you have access to three different files. Daily methane emissions at the longitude and latitude level. Daily methane emissions averaged at the county level. Daily methane emissions averaged at the state level. The files are provided in .csv format and can easily be merged with socio-economic data at the county or state level. We have included R and Python code to match users’ geotagged data to the latitude and longitude data. '),
+            html.H3("Links to Resources"),
+            html.H6("Resources identifying link between methane and health:"),
+            html.Ul([
+                html.Li(html.A("Resource 1", href="https://example.com/resource1")),
+                html.Li(html.A("Resource 2", href="https://example.com/resource2")),
+                html.Li(html.A("Resource 3", href="https://example.com/resource3"))
+            ]),
+        ])
     # If the user tries to reach a different page, return a 404 message
     return html.Div(
         [
@@ -853,14 +930,33 @@ def render_page_1_content(tab):
             html.H3('Methane data visualizations'),
             dcc.Dropdown(
         id='county-dropdown',
-        options=[{'label': STATEFP, 'value': STATEFP} for STATEFP in df_county['STATEFP'].unique()],
+        options=[{'label': StateName, 'value': StateName} for StateName in tab2_df_county['StateName'].unique()],
         value=None,
-        placeholder='Select a county',
+        placeholder='Select a state',
         style={'width': '200px', 'margin-bottom': '20px'}
     ),
     dcc.Graph(
         id='scatter-plot')
 
+        ])
+    elif tab =='tab-3':
+        return html.Div([
+            html.H3('Select state:'),  # Add the title for the dropdown menu
+    dcc.Dropdown(
+        id='state-dropdown',
+        options=sorted([{'label': StateName, 'value': StateName} for StateName in tab3_df_filtered['StateName'].unique()], key=lambda x: x['label']),
+        value=tab3_df_filtered['StateName'].unique()[0]
+    ),
+    dcc.Graph(id='map-graph'),
+    html.H3('Select week of the year:'),  # Add the title for the week slider
+    dcc.Slider(
+        id='date-slider',
+        min=tab3_df_filtered['week_of_year'].min(),
+        max=tab3_df_filtered['week_of_year'].max(),
+        value=tab3_df_filtered['week_of_year'].min(),
+        marks={str(week_of_year): str(week_of_year) for week_of_year in tab3_df_filtered['week_of_year'].unique()},
+        step=None
+    )
         ])
 #])
 #       dcc.Graph(id='Methane Stripes', figure=fig)
@@ -1001,6 +1097,57 @@ def update_nearest_hospital(click_data):
 #    
 #    return fig6
 
+
+##########################################################################################
+######################## All of Carolin's callback stuff #################################
+##########################################################################################
+
+# Carolin callback tab2 tab2_fig methane emissions over time (state drop down)
+@app.callback(
+    Output('scatter-plot', 'figure'),
+    [Input('county-dropdown', 'value')]
+)
+def update_scatter_plot(selected_county):
+    if selected_county is None:
+        tab2_filtered_df = tab2_df_county
+    else:
+        tab2_filtered_df = tab2_df_county[tab2_df_county['StateName'] == selected_county]
+
+    tab2_fig = px.scatter(tab2_filtered_df, x='date', y='ch4', color='ch4', trendline='lowess', range_color=[tab2_df_county['ch4'].min(), tab2_df_county['ch4'].max()])
+    tab2_fig.update_traces(marker=dict(size=5))
+    tab2_fig.update_layout(
+        xaxis_title='Year',
+        yaxis_title='Methane ppm',
+        title='Rising methane emissions in the United States (2003-2021)',
+        coloraxis_colorbar=dict(title='Methane ppb')
+    )
+    
+    return tab2_fig
+
+tab2_df_county.show()
+
+
+# Carolin callback tab3 tab3_fig: map with emissions in 2019 and date slider and state drop down
+@app.callback(
+    dash.dependencies.Output('map-graph', 'figure'),
+    [dash.dependencies.Input('date-slider', 'value'),
+     dash.dependencies.Input('state-dropdown', 'value')]
+)
+def update_map(selected_date, selected_state):
+    tab3_filtered_data = tab3_df_filtered[(tab3_df_filtered['week_of_year'] == selected_date) & (tab3_df_filtered['StateName'] == selected_state)]
+
+    tab3_fig = px.scatter_mapbox(tab3_df_filtered, lat='latitude', lon='longitude',
+                            hover_data=['ch4'], color='ch4', color_continuous_scale='Viridis',
+                            range_color=[tab3_df_filtered['ch4'].min(), tab3_df_filtered['ch4'].max()],
+                            size='ch4', size_max=10, zoom=3)
+
+    tab3_fig.update_layout(mapbox_style='open-street-map')
+    tab3_fig.update_traces(marker=dict(opacity=0.8))
+    tab3_fig.update_layout(legend=dict(x=0, y=1), margin=dict(l=50, r=50, t=50, b=50))
+    tab3_fig.update_layout(mapbox=dict(center=dict(lat=filtered_data['latitude'].mean(), lon=filtered_data['longitude'].mean()), zoom=4))
+    tab3_fig.update_layout(title='Methane emissions in the United States, 2019')
+
+    return tab3_fig
 
 
 
