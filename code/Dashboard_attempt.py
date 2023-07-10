@@ -819,8 +819,9 @@ def render_page_content(pathname):
     elif pathname == "/page-2":
         return html.Div([
             dcc.Tabs(id="page-2-tabs", value='tab-4', children=[
-                dcc.Tab(label='Health Map', value='tab-4', style=tab_style, selected_style=tab_selected_style),
-                dcc.Tab(label='Health Graphs', value='tab-5', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Methane Deaths over time', value='tab-4', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Environmental methane and mortality', value='tab-5', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Environmental Justice', value='tab-6', style=tab_style, selected_style=tab_selected_style),
             ], style=tabs_styles),
             html.Div(id='page-2-tabs-content')
         ])
