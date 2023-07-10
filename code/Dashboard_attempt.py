@@ -1,4 +1,4 @@
-from dash import Dash, html, dash_table, dcc, callback, Output, Input
+from dash import Dash, State, html, dash_table, dcc, callback, Output, Input
 import pandas as pd
 
 
@@ -235,7 +235,14 @@ df_county = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Da
 df_county['date'] = pd.to_datetime(df_county['date'])
 
 
+tab2_FipsDF = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/fips2county.tsv', sep='\t', header='infer', dtype=str, encoding='latin-1')
+tab2_StateAbbrDF = tab2_FipsDF[["StateAbbr", 'StateFIPS', "StateName"]].drop_duplicates()
 
+df_county = pd.merge(df_county, tab2_StateAbbrDF.astype({'StateFIPS': 'int64'}), left_on='STATEFP', right_on='StateFIPS', how='left')
+#tab2_df_county['StateName'] = tab2_df_county['StateName'].astype('object')
+df_county = df_county.dropna(subset=['StateName'])
+
+df_county.head()
 
 
 
@@ -245,14 +252,15 @@ df_county['date'] = pd.to_datetime(df_county['date'])
 #app = Dash(__name__)
 import dash 
 from dash import dash_table
+from dash import State
 import reverse_geocoder as rg
+from dash.dependencies import Input, Output, State, MATCH
+
 
 
 app = dash.Dash(external_stylesheets=[dbc.themes.LUX])
 
-
 #server = app.server
-
 
 tabs_styles = {
     'height': '44px'
@@ -270,8 +278,6 @@ tab_selected_style = {
     'color': 'white',
     'padding': '6px'
 }
-
-
 
 SIDEBAR_STYLE = {
     "position": "fixed",
@@ -301,7 +307,7 @@ sidebar = html.Div(
         dbc.Nav(
             [
                 dbc.NavLink("Home", href="/", active="exact"),
-                dbc.NavLink("Methane Emmissions", href="/page-1", active="exact"),
+                dbc.NavLink("Methane Emissions", href="/page-1", active="exact"),
                 dbc.NavLink("Respiratory Health", href="/page-2", active="exact"),
                 dbc.NavLink("Links To Resources", href="/page-3", active="exact"),
             ],
@@ -327,12 +333,8 @@ def generate_top_locations_table():
 
     top_locations.columns = [col.replace('_', ' ') for col in top_locations.columns]
     
-    
- 
-
     # Rename 'ch4' column to 'Methane particles (Mole fraction)'
     top_locations.rename(columns={'ch4': 'Methane particles (Mole fraction)'}, inplace=True)
-    
     
     # Create a Dash DataTable component
     table = dash_table.DataTable(
@@ -345,12 +347,51 @@ def generate_top_locations_table():
     
     return table
 
+def generate_action_plan_textbox(tab):
+    if tab == 'tab-1':
+        content = html.P("Action plan for policymakers in relation to Methane Leaks.")
+    elif tab == 'tab-2':
+        content = html.P("Action plan for policymakers in relation to Methane Levels by State.<br>Lobby to prevent increases in methane levels in your state<br>Understand the historic reasons for increased methane (check our resources page).<br>Think about the future trajectory if nothing is done to mitigate it.")
+    elif tab == 'tab-3':
+        content = html.P("Action plan for policymakers in relation to Methane Map Slider.")
+    elif tab == 'tab-4':
+        content = html.P("Action plan for policymakers in relation to Methane Deaths over time.")
+    elif tab == 'tab-5':
+        content = html.P("Action plan for policymakers in relation to Environmental methane and mortality.")
+    elif tab == 'tab-6':
+        content = html.P("Action plan for policymakers in relation to Environmental Justice.")
+    else:
+        content = html.P("Action plan for policymakers.")
+
+    return html.Div([
+        html.Button(
+            "Action Plan",
+            id={'type': 'action-plan-btn', 'tab': tab},
+            className="btn btn-primary",
+            style={"margin-bottom": "1rem"},
+        ),
+        dbc.Collapse(
+            content,
+            id={'type': 'action-plan-collapse', 'tab': tab},
+            is_open=False,
+        )
+    ])
+
+
+@app.callback(
+    Output({'type': 'action-plan-collapse', 'tab': MATCH}, 'is_open'),
+    [Input({'type': 'action-plan-btn', 'tab': MATCH}, 'n_clicks')],
+    [State({'type': 'action-plan-collapse', 'tab': MATCH}, 'is_open')]
+)
+def toggle_action_plan_collapse(n_clicks, is_open):
+    if n_clicks is not None:
+        return not is_open
+    return is_open
 
 content = html.Div(id="page-content", style=CONTENT_STYLE)
 
 app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 
-# 
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
     if pathname == "/":
@@ -415,11 +456,11 @@ def render_page_content(pathname):
                 html.Li(html.A("Download Health Data for US Counties", href="https://example.com/health_data.csv")),
                 html.Li(html.A("Download Health Data for US States", href="https://example.com/health_data.csv")),
             ]),            
-            html.H3('Data notes and lincensing'),
+            html.H3('Data notes and licensing'),
             html.H6('Definitions and terms of use'),
-            html.P('The Copernicus Climate Data Store provides satellite-collected methane data at the longitude and latitude level. In this tab you have access to three different files. Daily methane emissions at the longitude and latitude level. Daily methane emissions averaged at the county level. Daily methane emissions averaged at the state level. The files are provided in .csv format and can easily be merged with socio-economic data at the county or state level. We have included R and Python code to match users’ geotagged data to the latitude and longitude data. '),
+            html.P('The Copernicus Climate Data Store provides satellite-collected methane data at the longitude and latitude level. In this tab, you have access to three different files. Daily methane emissions at the longitude and latitude level. Daily methane emissions averaged at the county level. Daily methane emissions averaged at the state level. The files are provided in .csv format and can easily be merged with socioeconomic data at the county or state level. We have included R and Python code to match users’ geotagged data to the latitude and longitude data. '),
             html.H3("Links to Resources"),
-            html.H6("Resources identifying link between methane and health:"),
+            html.H6("Resources identifying the link between methane and health:"),
             html.Ul([
                 html.Li(html.A("Resource 1", href="https://example.com/resource1")),
                 html.Li(html.A("Resource 2", href="https://example.com/resource2")),
@@ -441,76 +482,61 @@ def render_page_content(pathname):
 def render_page_1_content(tab):
     if tab == 'tab-1':
         return html.Div([
-            html.H3('Map of Methane Levels, overlayed with energy plant and hospital locations'),
+            html.H3('Map of Methane Levels, overlaid with energy plant and hospital locations'),
             dcc.Graph(id='map'),
-#            html.Hr(),
             html.H4('Top Locations by Methane Levels'),
-            generate_top_locations_table()
+            generate_top_locations_table(),
+            generate_action_plan_textbox('tab-1')
          ])
     elif tab == 'tab-2':
         return html.Div([
             html.H3('Methane data visualizations'),
             dcc.Dropdown(
-        id='county-dropdown',
-        options=[{'label': STATEFP, 'value': STATEFP} for STATEFP in df_county['STATEFP'].unique()],
-        value=None,
-        placeholder='Select a state',
-        style={'width': '200px', 'margin-bottom': '20px'}
-    ),
-    dcc.Graph(
-        id='scatter-plot')
-
+                id='county-dropdown',
+                options=[{'label': StateName, 'value': StateName} for StateName in df_county['StateName'].unique()],
+                value=None,
+                placeholder='Select a state',
+                style={'width': '200px', 'margin-bottom': '20px'}
+            ),
+            dcc.Graph(
+                id='scatter-plot'
+            ),
+            generate_action_plan_textbox('tab-2')
         ])
-    elif tab =='tab-3':
+    elif tab == 'tab-3':
         return html.Div([
-            html.H3('Select state:'),  # Add the title for the dropdown menu
-    dcc.Dropdown(
-        id='state-dropdown',
-        options=sorted([{'label': StateName, 'value': StateName} for StateName in tab3_df_filtered['StateName'].unique()], key=lambda x: x['label']),
-        value=tab3_df_filtered['StateName'].unique()[0]
-    ),
-    dcc.Graph(id='map-graph'),
-    html.H3('Select week of the year:'),  # Add the title for the week slider
-    dcc.Slider(
-        id='date-slider',
-        min=tab3_df_filtered['week_of_year'].min(),
-        max=tab3_df_filtered['week_of_year'].max(),
-        value=tab3_df_filtered['week_of_year'].min(),
-        marks={str(week_of_year): str(week_of_year) for week_of_year in tab3_df_filtered['week_of_year'].unique()},
-        step=None
-    )
+            html.H3('Select state:'),
+            dcc.Dropdown(
+                id='state-dropdown',
+                options=sorted([{'label': StateName, 'value': StateName} for StateName in tab3_df_filtered['StateName'].unique()], key=lambda x: x['label']),
+                value=tab3_df_filtered['StateName'].unique()[0]
+            ),
+            dcc.Graph(id='map-graph'),
+            html.H3('Select week of the year:'),
+            dcc.Slider(
+                id='date-slider',
+                min=tab3_df_filtered['week_of_year'].min(),
+                max=tab3_df_filtered['week_of_year'].max(),
+                value=tab3_df_filtered['week_of_year'].min(),
+                marks={str(week_of_year): str(week_of_year) for week_of_year in tab3_df_filtered['week_of_year'].unique()},
+                step=None
+            ),
+            generate_action_plan_textbox('tab-3')
         ])
-#       dcc.Graph(id='Methane Stripes', figure=fig)
-#        ])
-#    elif tab == 'tab-3':
-#        return html.Div([
-#            html.H3('Methane data slider'),
-#            dcc.Graph(id='map-graph'),
-#            dcc.Slider(
-#        id='date-slider',
-#        min=df_daily['year'].min(),
-#        max=df_daily['year'].max(),
-#        value=df_filtered['year'].min(),
-#        marks={str(year): str(year) for year in df_daily['year'].unique()},
-#        step=None
-#    )
-#        ])
 
 
 @app.callback(Output('page-2-tabs-content', 'children'), [Input('page-2-tabs', 'value')])
 def render_page_2_content(tab):
     if tab == 'tab-4':
         return html.Div([
-            html.H3('Map of Mortalities from respiratory diseases and gas leaks')
-
+            html.H3('Map of Mortalities from respiratory diseases and gas leaks'),
+            generate_action_plan_textbox('tab-4')
         ])
     elif tab == 'tab-5':
         return html.Div([
-            html.H3('Health data visualizations')
-
+            html.H3('Health data visualizations'),
+            generate_action_plan_textbox('tab-5')
         ])
-
-
 
 
 def find_nearest_point(lat, lon, df):
@@ -519,6 +545,7 @@ def find_nearest_point(lat, lon, df):
     nearest_index = np.argmin(distances)
     nearest_point = df.iloc[nearest_index]
     return nearest_point
+
 
 
 # Define the callback function to update the scatter plot based on the dropdown selection
@@ -556,39 +583,25 @@ def update_nearest_hospital(click_data):
             )
         )
         new_fig.add_trace(
-            go.Scattermapbox(
-                lat=[nearest_hospital['lat']],
-                lon=[nearest_hospital['lon']],
-                mode='markers',
-                customdata=[
-                    nearest_hospital['company_name'],
-                    nearest_hospital['phone_number'],
-                    nearest_hospital['number_of_employees'],
-                    nearest_hospital['previous_leaks_n'],
-                    nearest_hospital['fossil_fuel_type'],
-                    nearest_hospital['number_of_beds']
-                ],
-                marker=dict(size=10, color='red'),
-                hovertemplate='Company Name: %{customdata[0]}<br>Company telephone: %{customdata[1]}<br>Number of Employees: %{customdata[2]}<br>Number of Hospital Beds: %{customdata[5]}'
-            )
-        )
-
+    go.Scattermapbox(
+        lat=[nearest_hospital['lat']],
+        lon=[nearest_hospital['lon']],
+        mode='markers',
+        customdata=np.dstack((nearest_hospital["company_name"], nearest_hospital["phone_number"], nearest_hospital["number_of_employees"], nearest_hospital["previous_leaks_n"], nearest_hospital["fossil_fuel_type"], nearest_hospital["number_of_beds"])).T.tolist(),
+        marker=dict(size=10, color='red'),
+        hovertemplate='Company Name: %{customdata[0]}<br>Company telephone: %{customdata[1]}<br>Number of Employees: %{customdata[2]}<br>Number of Previous Leaks: %{customdata[3]}<br>Fossil Fuel Type: %{customdata[4]}<br>Number of Hospital Beds: %{customdata[5]}'
+    )
+)
         new_fig.add_trace(
             go.Scattermapbox(
                 lat=[nearest_energy_plant['lat']],
                 lon=[nearest_energy_plant['lon']],
                 mode='markers',
-                customdata=[
-                    nearest_energy_plant['company_name'],
-                    nearest_energy_plant['phone_number'],
-                    nearest_energy_plant['number_of_employees'],
-                    nearest_energy_plant['previous_leaks_n'],
-                    nearest_energy_plant['fossil_fuel_type']
-                ],
-                marker=dict(size=10, color='blue'),
-                hovertemplate='Company Name: %{customdata[0]}<br>Company telephone: %{customdata[1]}<br>Number of Employees: %{customdata[2]}<br>Number of previous methane leaks: %{customdata[3]}<br>Fossil fuel type: %{customdata[4]}'
-            )
-        )
+        customdata=np.dstack((nearest_energy_plant["company_name"], nearest_energy_plant["phone_number"], nearest_energy_plant["number_of_employees"], nearest_energy_plant["previous_leaks_n"], nearest_energy_plant["fossil_fuel_type"], nearest_energy_plant["number_of_beds"])).T.tolist(),
+        marker=dict(size=10, color='red'),
+        hovertemplate='Company Name: %{customdata[0]}<br>Company telephone: %{customdata[1]}<br>Number of Employees: %{customdata[2]}<br>Number of Previous Leaks: %{customdata[3]}<br>Fossil Fuel Type: %{customdata[4]}<br>Number of Hospital Beds: %{customdata[5]}'
+    )
+)
        # Set the zoom and view location from the previous figure
         new_fig.update_layout(mapbox=dict(center=dict(lat=tab1_fig2['layout']['mapbox']['center']['lat'],
                                                       lon=tab1_fig2['layout']['mapbox']['center']['lon']),
@@ -605,7 +618,7 @@ def update_scatter_plot(selected_county):
     if selected_county is None:
         filtered_df = df_county
     else:
-        filtered_df = df_county[df_county['STATEFP'] == selected_county]
+        filtered_df = df_county[df_county['StateName'] == selected_county]
 
     fig = px.scatter(filtered_df, x='date', y='ch4', color='ch4', trendline='lowess')
     fig.update_traces(marker=dict(size=5))
@@ -627,7 +640,7 @@ def update_scatter_plot(selected_county):
 def update_map(selected_date, selected_state):
     tab3_filtered_data = tab3_df_filtered[(tab3_df_filtered['week_of_year'] == selected_date) & (tab3_df_filtered['StateName'] == selected_state)]
 
-    tab3_fig = px.scatter_mapbox(tab3_df_filtered, lat='latitude', lon='longitude',
+    tab3_fig = px.scatter_mapbox(tab3_filtered_data, lat='latitude', lon='longitude',
                             hover_data=['ch4'], color='ch4', color_continuous_scale='Viridis',
                             range_color=[tab3_df_filtered['ch4'].min(), tab3_df_filtered['ch4'].max()],
                             size='ch4', size_max=10, zoom=3)
@@ -654,8 +667,9 @@ if __name__ == '__main__':
 # z1, z2, z3 = np.random.random((3, 7, 7))
 
 # customdata = np.dstack((z2, z3))
-# mycustomdata = np.dstack((hospitals["company_name"], hospitals["number_of_employees"]))
-# mycustomdata = mycustomdata.T.tolist()
+mycustomdata = np.dstack((hospitals["company_name"], hospitals["number_of_employees"])).T.tolist()
+mycustomdata = mycustomdata.T.tolist()
+mycustomdata = np.dstack((hospitals["company_name"], hospitals["phone_number"], hospitals["number_of_employees"], hospitals["previous_leaks_n"], hospitals["fossil_fuel_type"], hospitals["number_of_beds"])).T.tolist(),
 
 
 
