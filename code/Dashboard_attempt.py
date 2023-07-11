@@ -261,19 +261,6 @@ import plotly.colors as colors
 tab4_df.sort_values(by='ID', ascending=False, inplace=True)
 
 
-##fig 8 - methane-related deaths stratified by race##
-import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-
-tab6_df = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/Race_Methane.txt', delimiter='\t')
-
-tab6_df = tab6_df.groupby(['County', 'Single Race 6'])['Deaths'].sum().reset_index()
-
-tab6_df['total_deaths'] = tab6_df.groupby('County')['Deaths'].transform('sum')
-
-tab6_df['Proportion'] = tab6_df['Deaths'] / tab6_df['total_deaths']
-
 
 
 ##fig 9 - county emissions and health##
@@ -415,7 +402,7 @@ tab6_df['total_deaths'] = tab6_df.groupby('County')['Deaths'].transform('sum')
 
 tab6_df['Proportion'] = tab6_df['Deaths'] / tab6_df['total_deaths']
 
-tab6_df.sort_values(by='Single Race 6', ascending=False, inplace=True)
+tab6_df.sort_values(by='Single Race 6', ascending=True, inplace=True)
 
 ##### search function#####
 
@@ -783,7 +770,7 @@ def render_page_content(pathname):
             html.H2("Welcome to the Methane Impacts Tracker Dashboard", className="display-7"),
             html.Hr(),
             html.H4("Purpose of the Dashboard"),
-            html.P("The Climate Coders Methane Dashboard aims to provide policymakers with valuable insights into methane levels and their impact on population health in the USA. By visualizing methane emissions, respiratory health data, and related information, this dashboard assists policymakers in making informed decisions to address the challenges posed by methane exposure."),
+            html.P("The Climate Coders Methane Dashboard aims to provide policymakers with valuable insights into methane levels and their impact on population health in the USA. By visualizing methane emissions, health data, and related information, this dashboard assists policymakers in making informed decisions to address the challenges posed by methane exposure."),
             html.H4("Key Features"),
             html.Ul([
                 html.Li("Methane Leaks: Interactive map showcasing highest methane emissions and nearby energy sites."),
@@ -792,7 +779,7 @@ def render_page_content(pathname):
                 html.Li("Increasing risks of methane-related health: Graphical visualisation in trends of respiratory, mental health and methane mortalities."),
                 html.Li("Counties at health-risk: Identify which counties have highest methane and worst health outcomes."),
                 html.Li("Racial impacts of methane emmissions: Graphs presenting methane-related mortalities and racial inequalities."),
-                html.Li("Links to Resources: Comprehensive list of resources, papers, and articles related to methane emissions and respiratory health."),
+                html.Li("Links to Resources: Comprehensive list of resources, papers, and articles related to methane emissions and impacts on health."),
             ]),
             html.H4("How to Use"),
             html.P("Navigate through the tabs at the sidebar to access different sections of the dashboard. Each section provides specific information and visualizations related to methane levels and health impacts. Use the interactive components to explore the data and gain insights."),
@@ -805,7 +792,7 @@ def render_page_content(pathname):
             dbc.Nav(
                 [
                     dbc.NavLink("Methane Emissions", href="/page-1", active="exact"),
-                    dbc.NavLink("Respiratory Health", href="/page-2", active="exact"),
+                    dbc.NavLink("Health Impacts", href="/page-2", active="exact"),
                     dbc.NavLink("Links to Resources", href="/page-3", active="exact"),
                 ],
                 vertical=True,
@@ -835,9 +822,10 @@ def render_page_content(pathname):
     elif pathname == "/page-3":
         return html.Div([
             dcc.Tabs(id="page-3-tabs", value='tab-7', children=[
-                dcc.Tab(label='Data access', value='tab-7', style=tab_style, selected_style=tab_selected_style),
-                dcc.Tab(label='Educational resources', value='tab-8', style=tab_style, selected_style=tab_selected_style),
-                dcc.Tab(label='Contact and feedback', value='tab-9', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Data download', value='tab-7', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Data upload', value='tab-8', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Educational resources', value='tab-9', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Contact and feedback', value='tab-10', style=tab_style, selected_style=tab_selected_style),
             ], style=tabs_styles),
             html.Div(id='page-3-tabs-content')
         ])
@@ -949,17 +937,6 @@ def render_page_3_content(tab):
                 html.Li(html.A("Download Methane Data with latitude and longitude", href="https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_lonlat.csv")),
                 html.Li(html.A("Download Health Data for US Counties", href="https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_county.csv")),
                 html.Li(html.A("Download Health Data for US States", href="https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_county.csv"))]),            
-            html.H3('Data Uploads:'),
-            html.H6('Search for closest methane area anywhere in the world!'),
-            html.Label('Enter a location:'),
-            dcc.Input(id='location-input', type='text', placeholder='Enter a location'),
-            html.Div(id='result-output'),
-            html.P('Soon you can upload your own data to merge it with methane and health data in this dashboard:'),
-            html.Ul([
-                html.Li("Data will use google API to search you data with the column labelled geography"),
-                html.Li("Our code will then merge this with the closest methane and health data"),
-                html.Li("Data will be returned in the format of your own choosing and will not be stored on our site."),            
-                html.Li("This feature is in progress and a trial version has been completed and is waiting to be deployed to this page.")]),            
             html.H3('Data notes and licensing'),
             html.H6('Data sources used in this dashboard'),
             html.Ul([
@@ -983,6 +960,24 @@ def render_page_3_content(tab):
 
         ])
     elif tab == 'tab-8':
+        return  html.Div([
+            html.H3('Methane data search:'),
+            html.H6('Search for closest methane area anywhere in the world!'),
+            html.Label('Enter a location:'),
+            dcc.Input(id='location-input', type='text', placeholder='Enter a location'),
+            html.Hr(),
+            html.H6('Search results: (this feature will take around 15 seconds)'),
+            html.Div(id='result-output'),
+            html.Hr(),
+            html.H3('Data upload:'),
+            html.P('Soon you can upload your own data to merge it with methane and health data in this dashboard:'),
+            html.Ul([
+                html.Li("Data will use google API to search you data with the column labelled geography"),
+                html.Li("Our code will then merge this with the closest methane and health data"),
+                html.Li("Data will be returned in the format of your own choosing and will not be stored on our site."),            
+                html.Li("This feature is in progress will eventually be deployed to this page.")])            
+           ])
+    elif tab == 'tab-9':
         return html.Div([
             html.H3("Links to Resources"),
 
@@ -1007,7 +1002,7 @@ def render_page_3_content(tab):
                 html.Li(html.A("Report on climate litigation following a major gas leak", href="https://www.reuters.com/business/energy/socalgas-settles-2015-gas-leak-litigation-take-11-bln-charge-2021-09-27/"))
             ])
         ])
-    elif tab == 'tab-9':
+    elif tab == 'tab-10':
         return html.Div([
             html.H3("Meet the team:"),
             html.Ul([
@@ -1214,7 +1209,7 @@ def update_tab4_plot(death_type):
     # Set the plot title and labels
     tab4_fig.update_layout(
         #title=f'Trend in Number of Deaths ({desired_id.capitalize()}-related) Over Time',
-        title=f'Trend in Number of Methane-related Deaths Over Time',
+        title=f'Number of Deaths Over Time by Cause',
         xaxis_title='Year',
         yaxis_title='Number of Deaths'
     )
@@ -1266,6 +1261,7 @@ def update_output(value):
         #closest_point['latitude'] = closest_point['latitude'].round(2)
         #closest_point['longitude'] = closest_point['longitude'].round(2)
         #closest_point['ch4'] = closest_point['ch4'].round(2)
+
 
         # Return the result
         return html.Div([
