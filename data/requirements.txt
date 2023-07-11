@@ -1,0 +1,11 @@
+dash==2.6.0
+pandas
+gunicorn
+numpy
+datetime
+chart_studio
+geopandas
+geopy
+dash_bootstrap_components
+matplotlib
+
