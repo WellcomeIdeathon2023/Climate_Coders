@@ -415,11 +415,11 @@ tab6_df['total_deaths'] = tab6_df.groupby('County')['Deaths'].transform('sum')
 
 tab6_df['Proportion'] = tab6_df['Deaths'] / tab6_df['total_deaths']
 
-
+tab6_df.sort_values(by='Single Race 6', ascending=False, inplace=True)
 
 ##### search function#####
 
-import cdsapi
+#import cdsapi
 
 # c = cdsapi.Client(url = "...", key = "...")
 
@@ -436,6 +436,80 @@ import cdsapi
 #         'format': 'zip',
 #     },
 #     '/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/GitHub/Climate_Coders/data/download.zip')
+
+
+## Get location 
+
+from geopy.geocoders import Nominatim
+
+# calling the Nominatim tool
+loc = Nominatim(user_agent="GetLoc")
+
+# entering the location name
+getLoc = loc.geocode("my_location")
+
+target_address = getLoc.address
+target_lon = getLoc.longitude
+#target_lon = round(target_lon, 2)
+target_lat = getLoc.latitude
+#target_lat = round(target_lat, 2)
+
+# Find closest methane observation 
+
+import netCDF4 as nc
+import pandas as pd
+from geopy.distance import geodesic
+
+# Open the netCDF file
+df_search = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/df_find_location.csv')
+
+
+
+# Function to calculate distance between two points
+def calculate_distance(lon1, lat1, lon2, lat2):
+    point1 = (lat1, lon1)
+    point2 = (lat2, lon2)
+    distance = geodesic(point1, point2).miles
+    return distance
+
+# Calculate distances between target point and all points in the data frame
+distances = df_search.apply(lambda row: calculate_distance(target_lon, target_lat, row['longitude'], row['latitude']), axis=1)
+
+# Find the index of the closest point
+closest_index = distances.idxmin()
+
+# Retrieve the closest matching point
+closest_point = df_search.loc[closest_index]
+
+# Print the result
+print(closest_point) # target_address, 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -517,7 +591,7 @@ sidebar = html.Div(
             [
                 dbc.NavLink("Home", href="/", active="exact"),
                 dbc.NavLink("Methane Emissions", href="/page-1", active="exact"),
-                dbc.NavLink("Respiratory Health", href="/page-2", active="exact"),
+                dbc.NavLink("Health Impacts", href="/page-2", active="exact"),
                 dbc.NavLink("Links To Resources", href="/page-3", active="exact"),
             ],
             vertical=True,
@@ -570,7 +644,7 @@ def generate_action_plan_textbox(tab):
                 html.Li("Phone nearest energy company to ask them to check piping"),
                 html.Li("Warn hospital and employers of potential health risks for staff"),
                 ],
-                style={"font-size": "20px", "padding-left": "20px"}
+                style={"font-size": "28px", "padding-left": "28px"}
             )
         ])
     elif tab == 'tab-2':
@@ -582,7 +656,7 @@ def generate_action_plan_textbox(tab):
                 html.Li("Think about the future trajectory if nothing is done to mitigate methane levels."),
                 html.Li("Read up on why methane is concerning for health and wellbeing of populations (see our resource list)"),
                 ],
-                style={"font-size": "20px", "padding-left": "20px"}
+                style={"font-size": "28px", "padding-left": "28px"}
             )
         ])
     elif tab == 'tab-3':
@@ -594,7 +668,7 @@ def generate_action_plan_textbox(tab):
                 html.Li("Mobilise resources to those areas to help mitigate impacts of methane."),
                 html.Li("Think about whether there are natural or unnatural reasons for those methane levels and what can be done to lower them."),
                 ],
-                style={"font-size": "20px", "padding-left": "20px"}
+                style={"font-size": "28px", "padding-left": "28px"}
             )
         ])
     elif tab == 'tab-4':
@@ -606,7 +680,7 @@ def generate_action_plan_textbox(tab):
                 html.Li("Mobilise resources to those areas to help mitigate impacts of methane."),
                 html.Li("Think about whether there are natural or unnatural reasons for those methane levels and what can be done to lower them."),
                 ],
-                style={"font-size": "20px", "padding-left": "20px"}
+                style={"font-size": "28px", "padding-left": "28px"}
             )
         ])
     elif tab == 'tab-5':
@@ -618,7 +692,7 @@ def generate_action_plan_textbox(tab):
                 html.Li("Work to reduce the short-term risks of methane exposure"),
                 html.Li("Inform people about their own risk, according to their exposure levels (using geographic data in this dashboard)"),
                 ],
-                style={"font-size": "20px", "padding-left": "20px"}
+                style={"font-size": "28px", "padding-left": "28px"}
             )
         ])
     elif tab == 'tab-6':
@@ -630,7 +704,7 @@ def generate_action_plan_textbox(tab):
                 html.Li("Consider why those areas are worst impacted."),
                 html.Li("Plan to reduce the impact in those counties."),
                 ],
-                style={"font-size": "20px", "padding-left": "20px"}
+                style={"font-size": "28px", "padding-left": "28px"}
             )
         ])
     elif tab == 'tab-7':
@@ -642,7 +716,7 @@ def generate_action_plan_textbox(tab):
                 html.Li("Consider why certain populations are being impacted more than others."),
                 html.Li("Work to reduce inequalities and support communities most affected."),
                 ],
-                style={"font-size": "20px", "padding-left": "20px"}
+                style={"font-size": "28px", "padding-left": "28px"}
             )
         ])
 
@@ -706,7 +780,7 @@ def update_tab6_plot(selected_race):
 def render_page_content(pathname):
     if pathname == "/":
         return html.Div([
-            html.H2("Welcome to the Climate Coders Methane Dashboard", className="display-7"),
+            html.H2("Welcome to the Methane Impacts Tracker Dashboard", className="display-7"),
             html.Hr(),
             html.H4("Purpose of the Dashboard"),
             html.P("The Climate Coders Methane Dashboard aims to provide policymakers with valuable insights into methane levels and their impact on population health in the USA. By visualizing methane emissions, respiratory health data, and related information, this dashboard assists policymakers in making informed decisions to address the challenges posed by methane exposure."),
@@ -869,15 +943,18 @@ def render_page_2_content(tab):
 def render_page_3_content(tab):
     if tab == 'tab-7':
         return  html.Div([
-            html.H3('Data Access'),
-            html.H6('Data Downloads:'),
+            html.H3('Data Downloads:'),
             html.P('You can access to three different files: Data at the lat/llon scale, county scale or state scale:'),
             html.Ul([
                 html.Li(html.A("Download Methane Data with latitude and longitude", href="https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_lonlat.csv")),
                 html.Li(html.A("Download Health Data for US Counties", href="https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_county.csv")),
                 html.Li(html.A("Download Health Data for US States", href="https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_county.csv"))]),            
-            html.H6('Data Uploads:'),
-            html.P('You can upload your own data to merge it with methane and health data in this dashboard:'),
+            html.H3('Data Uploads:'),
+            html.H6('Search for closest methane area anywhere in the world!'),
+            html.Label('Enter a location:'),
+            dcc.Input(id='location-input', type='text', placeholder='Enter a location'),
+            html.Div(id='result-output'),
+            html.P('Soon you can upload your own data to merge it with methane and health data in this dashboard:'),
             html.Ul([
                 html.Li("Data will use google API to search you data with the column labelled geography"),
                 html.Li("Our code will then merge this with the closest methane and health data"),
@@ -935,7 +1012,7 @@ def render_page_3_content(tab):
             html.H3("Meet the team:"),
             html.Ul([
                 html.Li([
-                    html.Img(src="https://github.com/BenGoodair/Methane_Dashboard/blob/main/carolin.jpg?raw=true", style={"width": "50px", "height": "50px"}),
+                    html.Img(src="https://github.com/BenGoodair/Methane_Dashboard/blob/main/carolin.jpg?raw=true", style={"width": "100px", "height": "100px"}),
                     html.Div([
                         html.H4("Carolin"),
                         html.P("Carolin is a social scientist working on identifying the short-term impacts of heat on the health of populations around the world."),
@@ -943,7 +1020,7 @@ def render_page_3_content(tab):
                     ], style={"display": "inline-block", "vertical-align": "top"})
                 ]),
                 html.Li([
-                    html.Img(src="https://github.com/BenGoodair/Methane_Dashboard/blob/main/dunja.jpg?raw=true", style={"width": "50px", "height": "50px"}),
+                    html.Img(src="https://github.com/BenGoodair/Methane_Dashboard/blob/main/dunja.jpg?raw=true", style={"width": "100px", "height": "100px"}),
                     html.Div([
                         html.H4("Dunja"),
                         html.P("Dunja is an engineer by training and has expertise in digital health."),
@@ -951,7 +1028,7 @@ def render_page_3_content(tab):
                     ], style={"display": "inline-block", "vertical-align": "top"})
                 ]),
                 html.Li([
-                    html.Img(src="https://github.com/BenGoodair/Methane_Dashboard/blob/main/ben.jpg?raw=true", style={"width": "50px", "height": "50px"}),
+                    html.Img(src="https://github.com/BenGoodair/Methane_Dashboard/blob/main/ben.jpg?raw=true", style={"width": "100px", "height": "100px"}),
                     html.Div([
                         html.H4("Ben"),
                         html.P("Ben is a social researcher identifying the impacts of privatization on health and social care systems."),
@@ -961,7 +1038,7 @@ def render_page_3_content(tab):
             ]),
             html.H3("Partner with us:"),
             html.H6("Join our team to continue this work"),
-            html.H6("We are looking for partners with policy, industrial or lived experiences to join our happy community!"),
+            html.P("We are looking for partners with policy, industrial or lived experiences to join our happy community!"),
             html.Ul([
                 html.Li('We will write a funding application to ensure labor compensated and valued.'),
                 html.Li('We want new directions and ideas, bring your creativity!'),
@@ -969,7 +1046,7 @@ def render_page_3_content(tab):
             ]),
             html.H3("Contact and feedback"),
             html.H6("Help us improve this dashboard for your needs!"),
-            html.H6("All our work is completely open access and reproducible, we'd love to work with you to apply this work to other data"),
+            html.P("All our work is completely open access and reproducible, we'd love to work with you to apply this work to other data"),
             html.Ul([
                 html.Li('Email us at: climate.codersemail.co.uk'),
                 html.Li('Tweet us at: ClimateCoders'),
@@ -1153,6 +1230,53 @@ def update_tab4_plot(death_type):
     tab4_fig.update_traces(name='')  
 
     return tab4_fig 
+
+
+
+
+# Dash callback
+@app.callback(dash.dependencies.Output('result-output', 'children'),[dash.dependencies.Input('location-input', 'value')])
+def update_output(value):
+    if value:
+        # calling the Nominatim tool
+        loc = Nominatim(user_agent="GetLoc")
+        
+        # entering the location name
+        getLoc = loc.geocode(value, timeout=5)
+
+        target_address = getLoc.address
+        target_lon = getLoc.longitude
+        target_lat = getLoc.latitude
+
+        # Function to calculate distance between two points
+        def calculate_distance(lon1, lat1, lon2, lat2):
+            point1 = (lat1, lon1)
+            point2 = (lat2, lon2)
+            distance = geodesic(point1, point2).miles
+            return distance
+
+        # Calculate distances between target point and all points in the data frame
+        distances = df_search.apply(lambda row: calculate_distance(target_lon, target_lat, row['longitude'], row['latitude']), axis=1)
+
+        # Find the index of the closest point
+        closest_index = distances.idxmin()
+
+        # Retrieve the closest matching point
+        closest_point = df_search.loc[closest_index]
+        #closest_point['latitude'] = closest_point['latitude'].round(2)
+        #closest_point['longitude'] = closest_point['longitude'].round(2)
+        #closest_point['ch4'] = closest_point['ch4'].round(2)
+
+        # Return the result
+        return html.Div([
+            html.H3('Target Address: {}'.format(target_address)),
+            html.H4('Closest Point: {}'.format(closest_point))
+        ])
+
+    return ''
+
+
+
 
 
 
