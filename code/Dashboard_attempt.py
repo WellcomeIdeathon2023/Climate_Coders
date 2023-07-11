@@ -881,7 +881,7 @@ def render_page_3_content(tab):
             html.Ul([
                 html.Li("Data will use google API to search you data with the column labelled geography"),
                 html.Li("Our code will then merge this with the closest methane and health data"),
-                html.Li("Data will be returned in the format of your own choosing and will not be stored on our site.")]),            
+                html.Li("Data will be returned in the format of your own choosing and will not be stored on our site."),            
                 html.Li("This feature is in progress and a trial version has been completed and is waiting to be deployed to this page.")]),            
             html.H3('Data notes and licensing'),
             html.H6('Data sources used in this dashboard'),
@@ -890,7 +890,7 @@ def render_page_3_content(tab):
                 html.Li(html.A("Health data comes from the Centre for Disease control and Prevention (CDC Wonder)", href="https://wonder.cdc.gov/ucd-icd10-expanded.html")),
                 html.Li(html.A("Data on energy plants and hospitals is simulated and available here", href="https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/simulated_data.csv"))]),            
             html.H6('Potential Biases in data'),
-            html.P('Please consider the following when interpretting our dashboard:')
+            html.P('Please consider the following when interpretting our dashboard:'),
             html.Ul([
                 html.Li("Health data and reporting follows on from histories of colonial measurement of health - as such we should be critical of racialised categories and minoritising or othering data."),
                 html.Li("Data reflects global power hierachies and as such high-income countries are frequenlty over-represented.")]),
