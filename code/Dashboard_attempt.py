@@ -417,10 +417,25 @@ tab6_df['Proportion'] = tab6_df['Deaths'] / tab6_df['total_deaths']
 
 
 
+##### search function#####
 
+import cdsapi
 
+# c = cdsapi.Client(url = "...", key = "...")
 
-
+# c.retrieve(
+#     'satellite-methane',
+#     {
+#         'processing_level': 'level_2',
+#         'variable': 'ch4',
+#         'sensor_and_algorithm': 'iasi_metop_b_nlis',
+#         'year': '2019',
+#         'month': '07',
+#         'day': '11',
+#         'version': '9.1',
+#         'format': 'zip',
+#     },
+#     '/Users/carolinkroeger/Library/CloudStorage/OneDrive-Nexus365/GitHub/Climate_Coders/data/download.zip')
 
 
 
@@ -698,14 +713,15 @@ def render_page_content(pathname):
             html.H4("Key Features"),
             html.Ul([
                 html.Li("Methane Leaks: Interactive map showcasing highest methane emissions and nearby energy sites."),
-                html.Li("Methane Graphs: Graphical representations and visualizations of methane data trends."),
-                html.Li("Health Map: Map displaying mortalities from respiratory diseases and gas leaks."),
-                html.Li("Health Graphs: Graphs presenting respiratory health data and trends."),
+                html.Li("Rising Methane Emmissions: Graphical representations and visualizations of localised methane data trends."),
+                html.Li("Methane Map: See where and when methane emmissions are highest."),
+                html.Li("Increasing risks of methane-related health: Graphical visualisation in trends of respiratory, mental health and methane mortalities."),
+                html.Li("Counties at health-risk: Identify which counties have highest methane and worst health outcomes."),
+                html.Li("Racial impacts of methane emmissions: Graphs presenting methane-related mortalities and racial inequalities."),
                 html.Li("Links to Resources: Comprehensive list of resources, papers, and articles related to methane emissions and respiratory health."),
             ]),
             html.H4("How to Use"),
             html.P("Navigate through the tabs at the sidebar to access different sections of the dashboard. Each section provides specific information and visualizations related to methane levels and health impacts. Use the interactive components to explore the data and gain insights."),
-            html.H4("For Policymakers"),
             html.P("We encourage policymakers to utilize this dashboard as a resource for evidence-based decision-making. By considering the data, visualizations, and resources provided here, policymakers can better understand the magnitude of methane emissions and the potential health risks associated with it. Additionally, we recommend referring to the 'Links to Resources' section for further in-depth research and reports."),
             html.Hr(),
             html.H4("Important Note"),
@@ -728,25 +744,25 @@ def render_page_content(pathname):
         return html.Div([
             dcc.Tabs(id="page-1-tabs", value='tab-1', children=[
                 dcc.Tab(label='Methane leaks', value='tab-1', style=tab_style, selected_style=tab_selected_style),
-                dcc.Tab(label='Methane levels by state', value='tab-2', style=tab_style, selected_style=tab_selected_style),
-                dcc.Tab(label='Methane map slider', value='tab-3', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Methane trends', value='tab-2', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Methane geographies', value='tab-3', style=tab_style, selected_style=tab_selected_style),
             ], style=tabs_styles),
             html.Div(id='page-1-tabs-content')
         ])
     elif pathname == "/page-2":
         return html.Div([
             dcc.Tabs(id="page-2-tabs", value='tab-4', children=[
-                dcc.Tab(label='Methane Deaths over time', value='tab-4', style=tab_style, selected_style=tab_selected_style),
-                dcc.Tab(label='Environmental methane and mortality', value='tab-5', style=tab_style, selected_style=tab_selected_style),
-                dcc.Tab(label='Environmental Justice', value='tab-6', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Methane-related deaths', value='tab-4', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='At-risk counties', value='tab-5', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Racial inequalities', value='tab-6', style=tab_style, selected_style=tab_selected_style),
             ], style=tabs_styles),
             html.Div(id='page-2-tabs-content')
         ])
     elif pathname == "/page-3":
         return html.Div([
             dcc.Tabs(id="page-3-tabs", value='tab-7', children=[
-                dcc.Tab(label='Data Access', value='tab-7', style=tab_style, selected_style=tab_selected_style),
-                dcc.Tab(label='Educational Resources', value='tab-8', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Data access', value='tab-7', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Educational resources', value='tab-8', style=tab_style, selected_style=tab_selected_style),
                 dcc.Tab(label='Contact and feedback', value='tab-9', style=tab_style, selected_style=tab_selected_style),
             ], style=tabs_styles),
             html.Div(id='page-3-tabs-content')
@@ -766,7 +782,7 @@ def render_page_content(pathname):
 def render_page_1_content(tab):
     if tab == 'tab-1':
         return html.Div([
-            html.H3('Map of Methane Levels, overlaid with energy plant and hospital locations'),
+            html.H3('Find polluting plants and nearby hospitlas:'),
             dcc.Graph(id='map', style={'height': '800px'}),
             html.H4('Top Locations by Methane Levels'),
             generate_top_locations_table(),
@@ -774,7 +790,7 @@ def render_page_1_content(tab):
          ])
     elif tab == 'tab-2':
         return html.Div([
-            html.H3('Methane data visualizations'),
+            html.H3('See rising methane in your state:'),
             dcc.Dropdown(
                 id='county-dropdown',
                 options=[{'label': StateName, 'value': StateName} for StateName in df_county['StateName'].unique()],
@@ -789,13 +805,13 @@ def render_page_1_content(tab):
         ])
     elif tab == 'tab-3':
         return html.Div([
-            html.H3('Select state:'),
+            html.H3('Find out where and when methane rises:'),
             dcc.Dropdown(
                 id='state-dropdown',
                 options=sorted([{'label': StateName, 'value': StateName} for StateName in tab3_df_filtered['StateName'].unique()], key=lambda x: x['label']),
                 value=tab3_df_filtered['StateName'].unique()[0]
             ),
-            dcc.Graph(id='map-graph'),
+            dcc.Graph(id='map-graph', style={'height': '600px'}),
             html.H3('Select week of the year:'),
             dcc.Slider(
                 id='date-slider',
@@ -813,6 +829,7 @@ def render_page_1_content(tab):
 def render_page_2_content(tab):
     if tab == 'tab-4':
         return  html.Div([
+            html.H3('See the increasing risk of death from methane exposure and related causes:'),
             dcc.Dropdown(
                 id='death-type-dropdown',
                 options=[{'label': death, 'value': death} for death in tab4_df['ID'].unique()],
@@ -825,7 +842,7 @@ def render_page_2_content(tab):
         ])
     elif tab == 'tab-5':
         return html.Div([
-            html.H3('Health data visualizations'),
+            html.H3('Find out which counties have high emissions and mortalities:'),
             dcc.Graph(id='Health visualisation', figure=tab5_fig),
             generate_action_plan_textbox('tab-5')
 
@@ -833,6 +850,7 @@ def render_page_2_content(tab):
         ])
     elif tab == 'tab-6':
         return  html.Div([
+            html.H3('Find out which counties have high emissions and mortalities:'),
             dcc.Dropdown(
                 id='race-dropdown',
                 options=[{'label': race, 'value': race} for race in tab6_df['Single Race 6'].unique()],
@@ -841,8 +859,9 @@ def render_page_2_content(tab):
             ),
             dcc.Graph(id='tab6-plot'),
             generate_action_plan_textbox('tab-6')
-
+            
         ])
+
 
 
 
@@ -851,42 +870,112 @@ def render_page_3_content(tab):
     if tab == 'tab-7':
         return  html.Div([
             html.H3('Data Access'),
-            html.H6('Access methane and health data here:'),
+            html.H6('Data Downloads:'),
+            html.P('You can access to three different files: Data at the lat/llon scale, county scale or state scale:'),
             html.Ul([
                 html.Li(html.A("Download Methane Data with latitude and longitude", href="https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_lonlat.csv")),
                 html.Li(html.A("Download Health Data for US Counties", href="https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_county.csv")),
-                html.Li(html.A("Download Health Data for US States", href="https://example.com/health_data.csv"))]),            
+                html.Li(html.A("Download Health Data for US States", href="https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_county.csv"))]),            
+            html.H6('Data Uploads:'),
+            html.P('You can upload your own data to merge it with methane and health data in this dashboard:'),
+            html.Ul([
+                html.Li("Data will use google API to search you data with the column labelled geography"),
+                html.Li("Our code will then merge this with the closest methane and health data"),
+                html.Li("Data will be returned in the format of your own choosing and will not be stored on our site.")]),            
+                html.Li("This feature is in progress and a trial version has been completed and is waiting to be deployed to this page.")]),            
             html.H3('Data notes and licensing'),
-            html.H6('Definitions and terms of use'),
-            html.P('The Copernicus Climate Data Store provides satellite-collected methane data at the longitude and latitude level.'),
-            html.P('In this tab, you have access to three different files:'),
-                   html.Li('Daily methane emissions at the longitude and latitude level.'),
-                   html.Li('Daily methane emissions averaged at the county level.'),
-                   html.Li('Daily methane emissions averaged at the state level.'),
-            html.P('The files are provided in .csv format and can easily be merged with socioeconomic data at the county or state level.'),
-            html.P('We have included R and Python code to match users’ geotagged data to the latitude and longitude data.'),
+            html.H6('Data sources used in this dashboard'),
+            html.Ul([
+                html.Li(html.A("The Copernicus Climate Data Store provides satellite-collected methane data ", href="https://cds.climate.copernicus.eu/cdsapp#!/dataset/satellite-methane?tab=overview")),
+                html.Li(html.A("Health data comes from the Centre for Disease control and Prevention (CDC Wonder)", href="https://wonder.cdc.gov/ucd-icd10-expanded.html")),
+                html.Li(html.A("Data on energy plants and hospitals is simulated and available here", href="https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/simulated_data.csv"))]),            
+            html.H6('Potential Biases in data'),
+            html.P('Please consider the following when interpretting our dashboard:')
+            html.Ul([
+                html.Li("Health data and reporting follows on from histories of colonial measurement of health - as such we should be critical of racialised categories and minoritising or othering data."),
+                html.Li("Data reflects global power hierachies and as such high-income countries are frequenlty over-represented.")]),
+            html.H6('Data licenses for use and reuse'),
+            html.P('Terms of use for the methane data are that:'),
+            html.Ul([
+                html.Li("We agree ... to inform us prior to any publication where the data products are planned to be used."),
+                html.Li("We agree ... to offer us co-authorship for any planned peer-reviewed publication based on our data products.")]),
+            html.P("Terms of use for the health data are that:"),
+            html.Ul([
+                html.Li("These data are provided for the purpose of statistical reporting and analysis only. The CDC/ATSDR Policy on Releasing and Sharing Data prohibits linking these data with other data sets or information for the purpose of identifying an individual."),
+                html.Li("The Public Health Service Act (42 U.S.C. 242m(d)) provides that the data collected by the National Center for Health Statistics (NCHS) may be used only for the purpose for which they were obtained; any effort to determine the identity of any reported cases, or to use the information for any purpose other than for statistical reporting and analysis, is against the law.")])
+
         ])
     elif tab == 'tab-8':
         return html.Div([
             html.H3("Links to Resources"),
-            html.H6("Resources identifying the link between methane and health:"),
+
+            html.H6("Information on Methane and Research on its Rising Levels"),
+            html.P("Learn about studies showing the rising methane levels over time and their impact on the environment:"),
             html.Ul([
-                html.Li(html.A("Resource 1", href="https://example.com/resource1")),
-                html.Li(html.A("Resource 2", href="https://example.com/resource2")),
-                html.Li(html.A("Resource 3", href="https://example.com/resource3"))
+                html.Li(html.A("What is methane and why does it matter?", href="https://www.epa.gov/gmi/importance-methane")),
+                html.Li(html.A("Research on the dangerously fast growing methane levels", href="https://www.nature.com/articles/d41586-022-00312-2"))
+            ]),
+
+            html.H6("Impact of Methane on Human Health"),
+            html.P("Discover the effects of methane on human health and related research findings:"),
+            html.Ul([
+                html.Li(html.A("Summary of the impacts of methane on human health", href="https://globalcleanair.org/methane-and-health/")),
+                html.Li(html.A("Review on the impacts of methane on climate, health, and ecosystems", href="https://www-sciencedirect-com.ezproxy-prd.bodleian.ox.ac.uk/science/article/pii/S1462901122001204")),
+                html.Li(html.A("Visual summary of the harmful impacts of methane", href="https://www.ccacoalition.org/es/slcps/methane"))
+            ]),
+
+            html.H6("Litigation of Gas Leaks in the USA"),
+            html.P("Explore legal cases and actions related to gas leaks in the United States:"),
+            html.Ul([
+                html.Li(html.A("Report on climate litigation following a major gas leak", href="https://www.reuters.com/business/energy/socalgas-settles-2015-gas-leak-litigation-take-11-bln-charge-2021-09-27/"))
             ])
         ])
     elif tab == 'tab-9':
         return html.Div([
+            html.H3("Meet the team:"),
+            html.Ul([
+                html.Li([
+                    html.Img(src="https://github.com/BenGoodair/Methane_Dashboard/blob/main/carolin.jpg?raw=true", style={"width": "50px", "height": "50px"}),
+                    html.Div([
+                        html.H4("Carolin"),
+                        html.P("Carolin is a social scientist working on identifying the short-term impacts of heat on the health of populations around the world."),
+                        html.P("Carolin has led our team, setting out values of fun, cooperation, and kindness from the very start. We love her for this!")
+                    ], style={"display": "inline-block", "vertical-align": "top"})
+                ]),
+                html.Li([
+                    html.Img(src="https://github.com/BenGoodair/Methane_Dashboard/blob/main/dunja.jpg?raw=true", style={"width": "50px", "height": "50px"}),
+                    html.Div([
+                        html.H4("Dunja"),
+                        html.P("Dunja is an engineer by training and has expertise in digital health."),
+                        html.P("Dunja conducted a lot of this work from a sunbed in Greece, we think the sun matches her personality and shines through her work.")
+                    ], style={"display": "inline-block", "vertical-align": "top"})
+                ]),
+                html.Li([
+                    html.Img(src="https://github.com/BenGoodair/Methane_Dashboard/blob/main/ben.jpg?raw=true", style={"width": "50px", "height": "50px"}),
+                    html.Div([
+                        html.H4("Ben"),
+                        html.P("Ben is a social researcher identifying the impacts of privatization on health and social care systems."),
+                        html.P("Ben provided the baked goods for joint study sessions and is committed to doing so in the future.")
+                    ], style={"display": "inline-block", "vertical-align": "top"})
+                ])
+            ]),
+            html.H3("Partner with us:"),
+            html.H6("Join our team to continue this work"),
+            html.H6("We are looking for partners with policy, industrial or lived experiences to join our happy community!"),
+            html.Ul([
+                html.Li('We will write a funding application to ensure labor compensated and valued.'),
+                html.Li('We want new directions and ideas, bring your creativity!'),
+                html.Li('We want to have fun and work in a respectful, supportive, and positive way.')
+            ]),
             html.H3("Contact and feedback"),
             html.H6("Help us improve this dashboard for your needs!"),
+            html.H6("All our work is completely open access and reproducible, we'd love to work with you to apply this work to other data"),
             html.Ul([
                 html.Li('Email us at: climate.codersemail.co.uk'),
                 html.Li('Tweet us at: ClimateCoders'),
                 html.Li('Find us at: ClimateCoders hub, United Kingdom')
             ])
         ])
-
 
 
 
