@@ -248,6 +248,249 @@ df_county.head()
 
 
 
+####HEALTHY CAKES####
+
+
+tab4_df = pd.read_csv("https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/month_health_df.csv")
+# alter the mh ID to be "mental health"
+tab4_df['ID'] = tab4_df['ID'].replace('mh', 'mental health')
+import pandas as pd
+import plotly.graph_objects as go
+import plotly.colors as colors
+
+# Filter the data by the desired ID (methane, mh, respiratory)
+desired_id = 'methane'  # Replace with the desired ID
+tab4_df_filtered = tab4_df[tab4_df['ID'] == desired_id]
+
+# Group the data by Year and Month, and calculate the total deaths for each combination
+tab4_df_grouped = tab4_df_filtered.groupby(['Year', 'Month'])['Deaths'].sum().reset_index()
+
+# Define the desired order of months
+month_order = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.']
+
+# Convert the 'Month' column to categorical with the desired order
+tab4_df_grouped['Month'] = pd.Categorical(tab4_df_grouped['Month'], categories=month_order, ordered=True)
+
+# Sort the data by Year and Month
+tab4_df_grouped = tab4_df_grouped.sort_values(['Year', 'Month'])
+
+# Create the x-axis tick labels as month and year combinations
+x_ticks = [f'{month} {int(year)}' for year, month in zip(tab4_df_grouped['Year'], tab4_df_grouped['Month'])]
+
+# Create the hovertemplate with only the month, year, and number of deaths
+hovertemplate = 'Year: %{x}<br>Month: %{text}<br>Number of Deaths: %{y}'
+
+# Get the viridis color scale
+viridis_colors = colors.sequential.Viridis
+
+# Create the line plot using Plotly
+deaths_over_time_fig = go.Figure()
+deaths_over_time_fig.add_trace(go.Scatter(x=x_ticks, y=tab4_df_grouped['Deaths'],
+                         mode='lines+markers', hovertemplate=hovertemplate,
+                         line={'color': viridis_colors[0]},
+                         text=tab4_df_grouped['Month']))  # Use the Month column for hover text
+
+# Set the plot title and labels
+deaths_over_time_fig.update_layout(
+    #title=f'Trend in Number of Deaths ({desired_id.capitalize()}-related) Over Time',
+    title=f'Trend in Number of Methane-related Deaths Over Time',
+    xaxis_title='Year',
+    yaxis_title='Number of Deaths'
+)
+
+deaths_over_time_fig.update_xaxes(
+    tickmode='array',
+    tickvals=[idx for idx, month in enumerate(tab4_df_grouped['Month']) if month == 'Jan.'],
+    ticktext=[str(int(year)) for year, month in zip(tab4_df_grouped['Year'], tab4_df_grouped['Month']) if month == 'Jan.'],
+    tickformat='.0f'
+)
+
+# Remove the trace name from the legend
+deaths_over_time_fig.update_traces(name='')
+
+
+
+##fig 8 - methane-related deaths stratified by race##
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+
+tab6_df = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/Race_Methane.txt', delimiter='\t')
+
+tab6_df = tab6_df.groupby(['County', 'Single Race 6'])['Deaths'].sum().reset_index()
+
+tab6_df['total_deaths'] = tab6_df.groupby('County')['Deaths'].transform('sum')
+
+tab6_df['Proportion'] = tab6_df['Deaths'] / tab6_df['total_deaths']
+
+
+
+##fig 9 - county emissions and health##
+import pandas as pd
+import plotly.express as px
+import geopandas as gpd
+
+### Prepare each of the data frames and merge them ###
+# Read CSV files
+tab5_df_county = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_county.csv')
+tab5_df_health = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/month_health_df.csv')
+
+tab5_df_county['month'] = pd.to_datetime(tab5_df_county['date']).dt.strftime('%m')
+tab5_df_county['year'] = pd.to_datetime(tab5_df_county['date']).dt.strftime('%Y')
+
+# STATE conversion 
+state_abbr_dict = {
+    '01': 'AL', '02': 'AK', '04': 'AZ', '05': 'AR', '06': 'CA', '08': 'CO', '09': 'CT', '10': 'DE',
+    '11': 'DC', '12': 'FL', '13': 'GA', '15': 'HI', '16': 'ID', '17': 'IL', '18': 'IN', '19': 'IA',
+    '20': 'KS', '21': 'KY', '22': 'LA', '23': 'ME', '24': 'MD', '25': 'MA', '26': 'MI', '27': 'MN',
+    '28': 'MS', '29': 'MO', '30': 'MT', '31': 'NE', '32': 'NV', '33': 'NH', '34': 'NJ', '35': 'NM',
+    '36': 'NY', '37': 'NC', '38': 'ND', '39': 'OH', '40': 'OK', '41': 'OR', '42': 'PA', '44': 'RI',
+    '45': 'SC', '46': 'SD', '47': 'TN', '48': 'TX', '49': 'UT', '50': 'VT', '51': 'VA', '53': 'WA',
+    '54': 'WV', '55': 'WI', '56': 'WY'
+}
+
+tab5_df_county['STATE'] = tab5_df_county['STATEFP'].map(state_abbr_dict)
+
+tab5_map_data = gpd.read_file('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/cb_2018_us_county_500k.shp')
+
+# Select desired columns
+tab5_map_data = tab5_map_data.drop(columns='geometry')[['COUNTYNS', 'GEOID', 'NAME']]
+
+# Housekeeping conversions for data type compatibility
+# Convert COUNTYNS column to int64
+tab5_map_data['COUNTYNS'] = tab5_map_data['COUNTYNS'].astype(int)
+
+# Convert COUNTYNS column in df_county to int64 if needed
+tab5_df_county['COUNTYNS'] = tab5_df_county['COUNTYNS'].astype(int)
+
+# Merge mapdata with with df_county
+tab5_df_county = pd.merge(tab5_map_data, tab5_df_county, on='COUNTYNS')
+
+
+# Define a lookup table for month abbreviations and corresponding numerical values
+month_lookup = {
+    "Jan.": "01", "Feb.": "02", "Mar.": "03", "Apr.": "04",
+    "May": "05", "Jun.": "06", "Jul.": "07", "Aug.": "08",
+    "Sep.": "09", "Oct.": "10", "Nov.": "11", "Dec.": "12"
+}
+
+# Convert the month column to numerical values
+tab5_df_health['month'] = tab5_df_health['Month'].map(month_lookup)
+
+tab5_df_health['County Code'] = tab5_df_health['County Code'].astype(int)
+tab5_df_health['County Code'] = tab5_df_health['County Code'].astype(str).str.zfill(5)
+tab5_df_health.rename(columns={'County Code': 'GEOID', 'Year Code': 'year'}, inplace = True)
+
+# Convert 'GEOID' column in df_county to string
+tab5_df_county['GEOID'] = tab5_df_county['GEOID'].astype(str)
+
+# Check for non-numeric values in 'GEOID' column
+non_numeric_values = tab5_df_county[~tab5_df_county['GEOID'].str.isdigit()]['GEOID'].unique()
+print(f"Non-numeric values in 'GEOID' column: {non_numeric_values}")
+
+# Remove non-numeric values from df_county
+tab5_df_county = tab5_df_county[tab5_df_county['GEOID'].str.isdigit()]
+
+# Convert 'GEOID' column to integer
+tab5_df_county['GEOID'] = tab5_df_county['GEOID'].astype(int)
+tab5_df_health['GEOID'] = tab5_df_health['GEOID'].astype(int)
+
+# Group by 'GEOID', 'month', and 'year' and calculate mean of 'mean_ch4'
+tab5_df_county_grouped = tab5_df_county.groupby(['GEOID', 'month', 'year'])['mean_ch4'].mean().reset_index()
+
+# Drop invalid observations containing non-finite values
+tab5_df_health['year'] = tab5_df_health['year'].dropna().astype(float)
+
+# Fill remaining NaN values with a default value (e.g., 0)
+tab5_df_health['year'].fillna(0, inplace=True)
+
+# Convert the column to integer
+tab5_df_health['year'] = tab5_df_health['year'].astype(int)
+
+# Convert the column to object (string)
+tab5_df_health['year'] = tab5_df_health['year'].astype(str)
+
+### Create final data frame ###
+# Merge DataFrames based on 'GEOID', 'month', and 'year'
+tab5_combined = pd.merge(
+    tab5_df_health,
+    tab5_df_county_grouped,
+    on=['GEOID', 'month', 'year']
+)
+
+
+### Create the figure ###
+
+tab5_fig = px.scatter(tab5_combined[tab5_combined['ID'] == 'methane'], x='mean_ch4', y='Deaths',
+                 title='Methane-related deaths in the US',
+                 labels={'mean_ch4': 'Average county-level methane emissions', 'Deaths': 'Deaths per month'})
+
+tab5_fig.update_layout(
+    xaxis_title='Average county-level methane emissions',
+    yaxis_title='Deaths per month',
+    title='Methane-related deaths in the US'
+)
+
+# Define coordinates for the rectangular shape
+x0, x1 = 1900, tab5_fig['data'][0]['x'].max()  # x-axis range
+y0, y1 = 50, tab5_fig['data'][0]['y'].max()  # y-axis range
+
+# Add a red rectangular shape
+tab5_fig.add_shape(type='rect',
+              xref='x', yref='y',
+              x0=x0, y0=y0,
+              x1=x1, y1=y1,
+              line=dict(color='red', width=2),
+              fillcolor='rgba(0,0,0,0)',  # Transparent fill
+              opacity=1)
+
+# Update hovertemplate to display county names
+tab5_fig.update_traces(hovertemplate='Mean CH4: %{x}<br>'
+                                'Deaths: %{y}<br>'
+                                'County: %{customdata}<extra></extra>',
+                  customdata=tab5_combined[tab5_combined['ID'] == 'methane']['County'],
+                  hoverlabel=dict(namelength=0))
+
+##fig 8 - methane-related deaths stratified by race##
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+
+tab6_df = pd.read_csv('https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/Race_Methane.txt', delimiter='\t')
+
+tab6_df = tab6_df.groupby(['County', 'Single Race 6'])['Deaths'].sum().reset_index()
+
+tab6_df['total_deaths'] = tab6_df.groupby('County')['Deaths'].transform('sum')
+
+tab6_df['Proportion'] = tab6_df['Deaths'] / tab6_df['total_deaths']
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ####Dashboard####
 #app = Dash(__name__)
 import dash 
@@ -349,13 +592,41 @@ def generate_top_locations_table():
 
 def generate_action_plan_textbox(tab):
     if tab == 'tab-1':
-        content = html.P("Action plan for policymakers in relation to Methane Leaks.")
+        content = html.Div([
+            html.P("Action plan for policymakers in relation to methane leaks:"),
+            html.Ul([
+                html.Li("Locate leaks based on highest dectated methane levels"),
+                html.Li("Phone nearest energy company to ask them to check piping"),
+                html.Li("Warn hospital and employers of potential health risks for staff"),
+            ])
+        ])
     elif tab == 'tab-2':
-        content = html.P("Action plan for policymakers in relation to Methane Levels by State.<br>Lobby to prevent increases in methane levels in your state<br>Understand the historic reasons for increased methane (check our resources page).<br>Think about the future trajectory if nothing is done to mitigate it.")
+        content = html.Div([
+            html.P("Action plan for policymakers in relation to environmental methane increases:"),
+            html.Ul([
+                html.Li("Lobby to prevent increases in methane levels in your state."),
+                html.Li("Think about the future trajectory if nothing is done to mitigate methane levels."),
+                html.Li("Read up on why methane is concerning for health and wellbeing of populations (see our resource list)")
+            ])
+        ])
     elif tab == 'tab-3':
-        content = html.P("Action plan for policymakers in relation to Methane Map Slider.")
+        content = html.Div([
+            html.P("Action plan for policymakers in relation to methane geographies:"),
+            html.Ul([
+                html.Li("See the methane levels in your local area and how that is changing."),
+                html.Li("Mobilise resources to those areas to help mitigate impacts of methane."),
+                html.Li("Think about whether there are natural or unnatural reasons for those methane levels and what can be done to lower them.")
+            ])
+        ])
     elif tab == 'tab-4':
-        content = html.P("Action plan for policymakers in relation to Methane Deaths over time.")
+        content = html.Div([
+            html.P("Action plan for policymakers in relation to methane geographies:"),
+            html.Ul([
+                html.Li("See the methane levels in your local area and how that is changing."),
+                html.Li("Mobilise resources to those areas to help mitigate impacts of methane."),
+                html.Li("Think about whether there are natural or unnatural reasons for those methane levels and what can be done to lower them.")
+            ])
+        ])
     elif tab == 'tab-5':
         content = html.P("Action plan for policymakers in relation to Environmental methane and mortality.")
     elif tab == 'tab-6':
@@ -378,11 +649,7 @@ def generate_action_plan_textbox(tab):
     ])
 
 
-@app.callback(
-    Output({'type': 'action-plan-collapse', 'tab': MATCH}, 'is_open'),
-    [Input({'type': 'action-plan-btn', 'tab': MATCH}, 'n_clicks')],
-    [State({'type': 'action-plan-collapse', 'tab': MATCH}, 'is_open')]
-)
+@app.callback(Output({'type': 'action-plan-collapse', 'tab': MATCH}, 'is_open'),[Input({'type': 'action-plan-btn', 'tab': MATCH}, 'n_clicks')], [State({'type': 'action-plan-collapse', 'tab': MATCH}, 'is_open')])
 def toggle_action_plan_collapse(n_clicks, is_open):
     if n_clicks is not None:
         return not is_open
@@ -391,6 +658,37 @@ def toggle_action_plan_collapse(n_clicks, is_open):
 content = html.Div(id="page-content", style=CONTENT_STYLE)
 
 app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
+
+
+# Define the callback function to update the plot for environmental justice based on dropdown selection
+@app.callback(
+    Output('tab6-plot', 'figure'),
+    [Input('race-dropdown', 'value')]
+)
+def update_tab6_plot(selected_race):
+    if selected_race is None:
+        tab6_filtered_df = tab6_df
+    else:
+        tab6_filtered_df = tab6_df[tab6_df['Single Race 6'] == selected_race]
+
+    tab6_sorted_df = tab6_filtered_df.sort_values(by='Proportion', ascending=False)
+    
+    # Get the viridis color scale
+    viridis_colors = colors.sequential.Viridis
+
+    tab6_fig = px.scatter(tab6_sorted_df, x='County', y='Proportion', 
+                     color='Single Race 6', color_discrete_sequence=viridis_colors, 
+                     hover_data={'Single Race 6': False, 'Deaths': True},
+                     labels={'Single Race 6': 'Race', 'Deaths': 'Number of Deaths'})
+
+    tab6_fig.update_layout(
+        title='Proportion of Deaths by County',
+        xaxis_title='County',
+        yaxis_title='Proportion of Deaths'
+    )
+
+    return tab6_fig
+
 
 @app.callback(Output("page-content", "children"), [Input("url", "pathname")])
 def render_page_content(pathname):
@@ -448,26 +746,15 @@ def render_page_content(pathname):
             html.Div(id='page-2-tabs-content')
         ])
     elif pathname == "/page-3":
-         return html.Div([
-            html.H3('Data Access'),
-            html.H6('Download methane and health data here:'),
-            html.Ul([
-                html.Li(html.A("Download Methane Data with latitude and longitude", href="https://BenGoodair.github.io/Methane_Dashboard/methane_final_lonlat.csv")),
-                html.Li(html.A("Download Health Data for US Counties", href="https://example.com/health_data.csv")),
-                html.Li(html.A("Download Health Data for US States", href="https://example.com/health_data.csv")),
-            ]),            
-            html.H3('Data notes and licensing'),
-            html.H6('Definitions and terms of use'),
-            html.P('The Copernicus Climate Data Store provides satellite-collected methane data at the longitude and latitude level. In this tab, you have access to three different files. Daily methane emissions at the longitude and latitude level. Daily methane emissions averaged at the county level. Daily methane emissions averaged at the state level. The files are provided in .csv format and can easily be merged with socioeconomic data at the county or state level. We have included R and Python code to match users’ geotagged data to the latitude and longitude data. '),
-            html.H3("Links to Resources"),
-            html.H6("Resources identifying the link between methane and health:"),
-            html.Ul([
-                html.Li(html.A("Resource 1", href="https://example.com/resource1")),
-                html.Li(html.A("Resource 2", href="https://example.com/resource2")),
-                html.Li(html.A("Resource 3", href="https://example.com/resource3"))
-            ]),
+        return html.Div([
+            dcc.Tabs(id="page-3-tabs", value='tab-7', children=[
+                dcc.Tab(label='Data Access', value='tab-7', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Educational Resources', value='tab-5', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Contact and feedback', value='tab-6', style=tab_style, selected_style=tab_selected_style),
+            ], style=tabs_styles),
+            html.Div(id='page-3-tabs-content')
         ])
-    # If the user tries to reach a different page, return a 404 message
+   # If the user tries to reach a different page, return a 404 message
     return html.Div(
         [
             html.H1("404: Not found", className="text-danger"),
@@ -530,13 +817,72 @@ def render_page_2_content(tab):
     if tab == 'tab-4':
         return html.Div([
             html.H3('Map of Mortalities from respiratory diseases and gas leaks'),
-            generate_action_plan_textbox('tab-4')
+            dcc.Graph(id='Health map', figure=deaths_over_time_fig)
+
         ])
     elif tab == 'tab-5':
         return html.Div([
             html.H3('Health data visualizations'),
-            generate_action_plan_textbox('tab-5')
+            dcc.Graph(id='Health visualisation', figure=tab5_fig)
+
         ])
+    elif tab == 'tab-6':
+        return  html.Div([
+            dcc.Dropdown(
+                id='race-dropdown',
+                options=[{'label': race, 'value': race} for race in tab6_df['Single Race 6'].unique()],
+                value=None,
+                placeholder='Select a race'
+            ),
+            dcc.Graph(id='tab6-plot')
+        ])
+
+
+
+@app.callback(Output('page-3-tabs-content', 'children'), [Input('page-3-tabs', 'value')])
+def render_page_3_content(tab):
+    if tab == 'tab-7':
+        return  html.Div([
+            html.H3('Data Access'),
+            html.H6('Access methane and health data here:'),
+            html.Ul([
+                html.Li(html.A("Download Methane Data with latitude and longitude", href="https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_lonlat.csv")),
+                html.Li(html.A("Download Health Data for US Counties", href="https://raw.githubusercontent.com/BenGoodair/Methane_Dashboard/main/methane_final_county.csv")),
+                html.Li(html.A("Download Health Data for US States", href="https://example.com/health_data.csv"))]),            
+            html.H3('Data notes and licensing'),
+            html.H6('Definitions and terms of use'),
+            html.P('The Copernicus Climate Data Store provides satellite-collected methane data at the longitude and latitude level.'),
+            html.P('In this tab, you have access to three different files:'),
+                   html.Li('Daily methane emissions at the longitude and latitude level.'),
+                   html.Li('Daily methane emissions averaged at the county level.'),
+                   html.Li('Daily methane emissions averaged at the state level.'),
+            html.P('The files are provided in .csv format and can easily be merged with socioeconomic data at the county or state level.'),
+            html.P('We have included R and Python code to match users’ geotagged data to the latitude and longitude data.'),
+        ])
+    elif tab == 'tab-8':
+        return html.Div([
+            html.H3("Links to Resources"),
+            html.H6("Resources identifying the link between methane and health:"),
+            html.Ul([
+                html.Li(html.A("Resource 1", href="https://example.com/resource1")),
+                html.Li(html.A("Resource 2", href="https://example.com/resource2")),
+                html.Li(html.A("Resource 3", href="https://example.com/resource3"))
+            ])
+        ])
+    elif tab == 'tab-9':
+        return html.Div([
+            html.H3("Contact and feedback"),
+            html.H6("Help us improve this dashboard for your needs!"),
+            html.Ul([
+                html.Li('Email us at: climate.codersemail.co.uk'),
+                html.Li('Tweet us at: ClimateCoders'),
+                html.Li('Find us at: ClimateCoders hub, United Kingdom')
+            ])
+        ])
+
+
+
+
 
 
 def find_nearest_point(lat, lon, df):
@@ -549,8 +895,7 @@ def find_nearest_point(lat, lon, df):
 
 
 # Define the callback function to update the scatter plot based on the dropdown selection
-
-@app.callback(Output('map', 'figure'), [Input('map', 'clickData')])
+@app.callback(Output('map', 'figure'),[Input('map', 'clickData')])
 def update_nearest_hospital(click_data):
     if click_data:
         point = click_data['points'][0]
@@ -583,25 +928,25 @@ def update_nearest_hospital(click_data):
             )
         )
         new_fig.add_trace(
-    go.Scattermapbox(
-        lat=[nearest_hospital['lat']],
-        lon=[nearest_hospital['lon']],
-        mode='markers',
-        customdata=np.dstack((nearest_hospital["company_name"], nearest_hospital["phone_number"], nearest_hospital["number_of_employees"], nearest_hospital["previous_leaks_n"], nearest_hospital["fossil_fuel_type"], nearest_hospital["number_of_beds"])).T.tolist(),
-        marker=dict(size=10, color='red'),
-        hovertemplate='Company Name: %{customdata[0]}<br>Company telephone: %{customdata[1]}<br>Number of Employees: %{customdata[2]}<br>Number of Previous Leaks: %{customdata[3]}<br>Fossil Fuel Type: %{customdata[4]}<br>Number of Hospital Beds: %{customdata[5]}'
-    )
-)
+            go.Scattermapbox(
+                lat=[nearest_hospital['lat']],
+                lon=[nearest_hospital['lon']],
+                mode='markers',
+                customdata=np.dstack((nearest_hospital["company_name"], nearest_hospital["phone_number"], nearest_hospital["number_of_employees"], nearest_hospital["previous_leaks_n"], nearest_hospital["fossil_fuel_type"], nearest_hospital["number_of_beds"])),
+                marker=dict(size=10, color='red'),
+                hovertemplate='Company Name: %{customdata[0][0]}<br>Company telephone: %{customdata[0][1]}<br>Number of Employees: %{customdata[0][2]}<br>Number of Previous Leaks: %{customdata[0][3]}<br>Fossil Fuel Type: %{customdata[0][4]}<br>Number of Hospital Beds: %{customdata[0][5]}'
+            )
+        )
         new_fig.add_trace(
             go.Scattermapbox(
                 lat=[nearest_energy_plant['lat']],
                 lon=[nearest_energy_plant['lon']],
                 mode='markers',
-        customdata=np.dstack((nearest_energy_plant["company_name"], nearest_energy_plant["phone_number"], nearest_energy_plant["number_of_employees"], nearest_energy_plant["previous_leaks_n"], nearest_energy_plant["fossil_fuel_type"], nearest_energy_plant["number_of_beds"])).T.tolist(),
-        marker=dict(size=10, color='red'),
-        hovertemplate='Company Name: %{customdata[0]}<br>Company telephone: %{customdata[1]}<br>Number of Employees: %{customdata[2]}<br>Number of Previous Leaks: %{customdata[3]}<br>Fossil Fuel Type: %{customdata[4]}<br>Number of Hospital Beds: %{customdata[5]}'
-    )
-)
+                customdata=np.dstack((nearest_energy_plant["company_name"], nearest_energy_plant["phone_number"], nearest_energy_plant["number_of_employees"], nearest_energy_plant["previous_leaks_n"], nearest_energy_plant["fossil_fuel_type"], nearest_energy_plant["number_of_beds"])),
+                marker=dict(size=10, color='blue'),
+                hovertemplate='Company Name: %{customdata[0][0]}<br>Company telephone: %{customdata[0][1]}<br>Number of Employees: %{customdata[0][2]}<br>Number of Previous Leaks: %{customdata[0][3]}<br>Fossil Fuel Type: %{customdata[0][4]}<br>Number of Hospital Beds: %{customdata[0][5]}'
+            )   
+        )
        # Set the zoom and view location from the previous figure
         new_fig.update_layout(mapbox=dict(center=dict(lat=tab1_fig2['layout']['mapbox']['center']['lat'],
                                                       lon=tab1_fig2['layout']['mapbox']['center']['lon']),
@@ -610,6 +955,7 @@ def update_nearest_hospital(click_data):
         return new_fig
 
     return tab1_fig2
+
 
 
 
@@ -667,9 +1013,12 @@ if __name__ == '__main__':
 # z1, z2, z3 = np.random.random((3, 7, 7))
 
 # customdata = np.dstack((z2, z3))
-mycustomdata = np.dstack((hospitals["company_name"], hospitals["number_of_employees"])).T.tolist()
-mycustomdata = mycustomdata.T.tolist()
-mycustomdata = np.dstack((hospitals["company_name"], hospitals["phone_number"], hospitals["number_of_employees"], hospitals["previous_leaks_n"], hospitals["fossil_fuel_type"], hospitals["number_of_beds"])).T.tolist(),
+# mycustomdata = np.dstack((hospitals["company_name"], hospitals["number_of_employees"]))
+# mycustomdata = mycustomdata.T.tolist()
+
+
+
+# mycustomdata = np.dstack((hospitals["company_name"], hospitals["phone_number"], hospitals["number_of_employees"], hospitals["previous_leaks_n"], hospitals["fossil_fuel_type"], hospitals["number_of_beds"])).T.tolist(),
 
 
 
