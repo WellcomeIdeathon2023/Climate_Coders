@@ -258,56 +258,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.colors as colors
 
-# Filter the data by the desired ID (methane, mh, respiratory)
-desired_id = 'methane'  # Replace with the desired ID
-tab4_df_filtered = tab4_df[tab4_df['ID'] == desired_id]
-
-# Group the data by Year and Month, and calculate the total deaths for each combination
-tab4_df_grouped = tab4_df_filtered.groupby(['Year', 'Month'])['Deaths'].sum().reset_index()
-
-# Define the desired order of months
-month_order = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.']
-
-# Convert the 'Month' column to categorical with the desired order
-tab4_df_grouped['Month'] = pd.Categorical(tab4_df_grouped['Month'], categories=month_order, ordered=True)
-
-# Sort the data by Year and Month
-tab4_df_grouped = tab4_df_grouped.sort_values(['Year', 'Month'])
-
-# Create the x-axis tick labels as month and year combinations
-x_ticks = [f'{month} {int(year)}' for year, month in zip(tab4_df_grouped['Year'], tab4_df_grouped['Month'])]
-
-# Create the hovertemplate with only the month, year, and number of deaths
-hovertemplate = 'Year: %{x}<br>Month: %{text}<br>Number of Deaths: %{y}'
-
-# Get the viridis color scale
-viridis_colors = colors.sequential.Viridis
-
-# Create the line plot using Plotly
-deaths_over_time_fig = go.Figure()
-deaths_over_time_fig.add_trace(go.Scatter(x=x_ticks, y=tab4_df_grouped['Deaths'],
-                         mode='lines+markers', hovertemplate=hovertemplate,
-                         line={'color': viridis_colors[0]},
-                         text=tab4_df_grouped['Month']))  # Use the Month column for hover text
-
-# Set the plot title and labels
-deaths_over_time_fig.update_layout(
-    #title=f'Trend in Number of Deaths ({desired_id.capitalize()}-related) Over Time',
-    title=f'Trend in Number of Methane-related Deaths Over Time',
-    xaxis_title='Year',
-    yaxis_title='Number of Deaths'
-)
-
-deaths_over_time_fig.update_xaxes(
-    tickmode='array',
-    tickvals=[idx for idx, month in enumerate(tab4_df_grouped['Month']) if month == 'Jan.'],
-    ticktext=[str(int(year)) for year, month in zip(tab4_df_grouped['Year'], tab4_df_grouped['Month']) if month == 'Jan.'],
-    tickformat='.0f'
-)
-
-# Remove the trace name from the legend
-deaths_over_time_fig.update_traces(name='')
-
+tab4_df.sort_values(by='ID', ascending=False, inplace=True)
 
 
 ##fig 8 - methane-related deaths stratified by race##
@@ -542,7 +493,7 @@ CONTENT_STYLE = {
 
 sidebar = html.Div(
     [
-        html.H2("Climate Coders Methane Dashboard", className="display-7"),
+        html.H2("Methane Impacts Tracker", className="display-7"),
         html.Hr(),
         html.P(
             "Welcome to a dashboard detailing the health impacts of methane exposure in the USA.", className="lead"
@@ -574,6 +525,10 @@ def generate_top_locations_table():
     # Add the 'US State' column to the dataframe
     top_locations['US State'] = us_states
 
+    top_locations = top_locations[['USA_Methane_Ranking', 'US State', 'ch4', 'Nearest_Energy_plant', 'Nearest_Hospital', 'lon', 'lat', 'date']]
+
+    top_locations['ch4'] = top_locations['ch4'].round(2)
+
     top_locations.columns = [col.replace('_', ' ') for col in top_locations.columns]
     
     # Rename 'ch4' column to 'Methane particles (Mole fraction)'
@@ -593,46 +548,88 @@ def generate_top_locations_table():
 def generate_action_plan_textbox(tab):
     if tab == 'tab-1':
         content = html.Div([
-            html.P("Action plan for policymakers in relation to methane leaks:"),
+            html.P("Action plan for policymakers in relation to methane leaks:",
+                style={"font-size": "28px", "padding-left": "28px"}),
             html.Ul([
                 html.Li("Locate leaks based on highest dectated methane levels"),
                 html.Li("Phone nearest energy company to ask them to check piping"),
                 html.Li("Warn hospital and employers of potential health risks for staff"),
-            ])
+                ],
+                style={"font-size": "20px", "padding-left": "20px"}
+            )
         ])
     elif tab == 'tab-2':
         content = html.Div([
-            html.P("Action plan for policymakers in relation to environmental methane increases:"),
+            html.P("Action plan for policymakers in relation to environmental methane increases:",
+                style={"font-size": "28px", "padding-left": "28px"}),
             html.Ul([
                 html.Li("Lobby to prevent increases in methane levels in your state."),
                 html.Li("Think about the future trajectory if nothing is done to mitigate methane levels."),
-                html.Li("Read up on why methane is concerning for health and wellbeing of populations (see our resource list)")
-            ])
+                html.Li("Read up on why methane is concerning for health and wellbeing of populations (see our resource list)"),
+                ],
+                style={"font-size": "20px", "padding-left": "20px"}
+            )
         ])
     elif tab == 'tab-3':
         content = html.Div([
-            html.P("Action plan for policymakers in relation to methane geographies:"),
+            html.P("Action plan for policymakers in relation to methane geographies:",
+                style={"font-size": "28px", "padding-left": "28px"}),
             html.Ul([
                 html.Li("See the methane levels in your local area and how that is changing."),
                 html.Li("Mobilise resources to those areas to help mitigate impacts of methane."),
-                html.Li("Think about whether there are natural or unnatural reasons for those methane levels and what can be done to lower them.")
-            ])
+                html.Li("Think about whether there are natural or unnatural reasons for those methane levels and what can be done to lower them."),
+                ],
+                style={"font-size": "20px", "padding-left": "20px"}
+            )
         ])
     elif tab == 'tab-4':
         content = html.Div([
-            html.P("Action plan for policymakers in relation to methane geographies:"),
+            html.P("Action plan for policymakers in relation to methane geographies:",
+                style={"font-size": "28px", "padding-left": "28px"}),
             html.Ul([
                 html.Li("See the methane levels in your local area and how that is changing."),
                 html.Li("Mobilise resources to those areas to help mitigate impacts of methane."),
-                html.Li("Think about whether there are natural or unnatural reasons for those methane levels and what can be done to lower them.")
-            ])
+                html.Li("Think about whether there are natural or unnatural reasons for those methane levels and what can be done to lower them."),
+                ],
+                style={"font-size": "20px", "padding-left": "20px"}
+            )
         ])
     elif tab == 'tab-5':
-        content = html.P("Action plan for policymakers in relation to Environmental methane and mortality.")
+        content = html.Div([
+            html.P("Action plan for policymakers in relation to increasing risk of methane mortality.",
+                style={"font-size": "28px", "padding-left": "28px"}),
+            html.Ul([
+                html.Li("See the rising human cost of methane."),
+                html.Li("Work to reduce the short-term risks of methane exposure"),
+                html.Li("Inform people about their own risk, according to their exposure levels (using geographic data in this dashboard)"),
+                ],
+                style={"font-size": "20px", "padding-left": "20px"}
+            )
+        ])
     elif tab == 'tab-6':
-        content = html.P("Action plan for policymakers in relation to Environmental Justice.")
-    else:
-        content = html.P("Action plan for policymakers.")
+        content = html.Div([
+            html.P("Action plan for policymakers in relation to at-risk counties.",
+                style={"font-size": "28px", "padding-left": "28px"}),
+            html.Ul([
+                html.Li("Find the counties with highest methane exposures and worst health risks."),
+                html.Li("Consider why those areas are worst impacted."),
+                html.Li("Plan to reduce the impact in those counties."),
+                ],
+                style={"font-size": "20px", "padding-left": "20px"}
+            )
+        ])
+    elif tab == 'tab-7':
+        content = html.Div([
+            html.P("Action plan for policymakers in relation to racial risk of methane mortality.",
+                style={"font-size": "28px", "padding-left": "28px"}),
+            html.Ul([
+                html.Li("See who is being impacted most by methane exposure in your area."),
+                html.Li("Consider why certain populations are being impacted more than others."),
+                html.Li("Work to reduce inequalities and support communities most affected."),
+                ],
+                style={"font-size": "20px", "padding-left": "20px"}
+            )
+        ])
 
     return html.Div([
         html.Button(
@@ -667,7 +664,7 @@ app.layout = html.Div([dcc.Location(id="url"), sidebar, content])
 )
 def update_tab6_plot(selected_race):
     if selected_race is None:
-        tab6_filtered_df = tab6_df
+        tab6_filtered_df = tab6_df[tab6_df['Single Race 6']]
     else:
         tab6_filtered_df = tab6_df[tab6_df['Single Race 6'] == selected_race]
 
@@ -700,7 +697,7 @@ def render_page_content(pathname):
             html.P("The Climate Coders Methane Dashboard aims to provide policymakers with valuable insights into methane levels and their impact on population health in the USA. By visualizing methane emissions, respiratory health data, and related information, this dashboard assists policymakers in making informed decisions to address the challenges posed by methane exposure."),
             html.H4("Key Features"),
             html.Ul([
-                html.Li("Methane Map: Interactive map showcasing methane levels across different locations in the USA."),
+                html.Li("Methane Leaks: Interactive map showcasing highest methane emissions and nearby energy sites."),
                 html.Li("Methane Graphs: Graphical representations and visualizations of methane data trends."),
                 html.Li("Health Map: Map displaying mortalities from respiratory diseases and gas leaks."),
                 html.Li("Health Graphs: Graphs presenting respiratory health data and trends."),
@@ -725,7 +722,7 @@ def render_page_content(pathname):
                 pills=True,
             ),
             html.Hr(),
-            html.P("Acknowledgements, data sources, and contact information."),
+            html.P("Acknowledgements: we are grateful to the support from Wellcome Trust who motivated this dashboard."),
         ], style={"padding": "2rem"})
     elif pathname == "/page-1":
         return html.Div([
@@ -749,8 +746,8 @@ def render_page_content(pathname):
         return html.Div([
             dcc.Tabs(id="page-3-tabs", value='tab-7', children=[
                 dcc.Tab(label='Data Access', value='tab-7', style=tab_style, selected_style=tab_selected_style),
-                dcc.Tab(label='Educational Resources', value='tab-5', style=tab_style, selected_style=tab_selected_style),
-                dcc.Tab(label='Contact and feedback', value='tab-6', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Educational Resources', value='tab-8', style=tab_style, selected_style=tab_selected_style),
+                dcc.Tab(label='Contact and feedback', value='tab-9', style=tab_style, selected_style=tab_selected_style),
             ], style=tabs_styles),
             html.Div(id='page-3-tabs-content')
         ])
@@ -770,7 +767,7 @@ def render_page_1_content(tab):
     if tab == 'tab-1':
         return html.Div([
             html.H3('Map of Methane Levels, overlaid with energy plant and hospital locations'),
-            dcc.Graph(id='map'),
+            dcc.Graph(id='map', style={'height': '800px'}),
             html.H4('Top Locations by Methane Levels'),
             generate_top_locations_table(),
             generate_action_plan_textbox('tab-1')
@@ -815,15 +812,23 @@ def render_page_1_content(tab):
 @app.callback(Output('page-2-tabs-content', 'children'), [Input('page-2-tabs', 'value')])
 def render_page_2_content(tab):
     if tab == 'tab-4':
-        return html.Div([
-            html.H3('Map of Mortalities from respiratory diseases and gas leaks'),
-            dcc.Graph(id='Health map', figure=deaths_over_time_fig)
+        return  html.Div([
+            dcc.Dropdown(
+                id='death-type-dropdown',
+                options=[{'label': death, 'value': death} for death in tab4_df['ID'].unique()],
+                value=None,
+                placeholder='Select a cause of death'
+            ),
+            dcc.Graph(id='tab4-plot'),
+            generate_action_plan_textbox('tab-4')
 
         ])
     elif tab == 'tab-5':
         return html.Div([
             html.H3('Health data visualizations'),
-            dcc.Graph(id='Health visualisation', figure=tab5_fig)
+            dcc.Graph(id='Health visualisation', figure=tab5_fig),
+            generate_action_plan_textbox('tab-5')
+
 
         ])
     elif tab == 'tab-6':
@@ -834,7 +839,9 @@ def render_page_2_content(tab):
                 value=None,
                 placeholder='Select a race'
             ),
-            dcc.Graph(id='tab6-plot')
+            dcc.Graph(id='tab6-plot'),
+            generate_action_plan_textbox('tab-6')
+
         ])
 
 
@@ -998,6 +1005,66 @@ def update_map(selected_date, selected_state):
     tab3_fig.update_layout(title='Methane emissions in the United States, 2019')
 
     return tab3_fig
+
+
+
+
+@app.callback(Output('tab4-plot', 'figure'),[Input('death-type-dropdown', 'value')])
+def update_tab4_plot(death_type):
+    if death_type is None:
+        tab4_df_filtered = tab4_df[tab4_df['ID'] == 'methane']
+
+    else:
+        tab4_df_filtered = tab4_df[tab4_df['ID'] == death_type]
+
+    # Group the data by Year and Month, and calculate the total deaths for each combination
+    tab4_df_grouped = tab4_df_filtered.groupby(['Year', 'Month'])['Deaths'].sum().reset_index()
+
+    # Define the desired order of months
+    month_order = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.']
+
+    # Convert the 'Month' column to categorical with the desired order
+    tab4_df_grouped['Month'] = pd.Categorical(tab4_df_grouped['Month'], categories=month_order, ordered=True)
+
+    # Sort the data by Year and Month
+    tab4_df_grouped = tab4_df_grouped.sort_values(['Year', 'Month'])
+
+    # Create the x-axis tick labels as month and year combinations
+    x_ticks = [f'{month} {int(year)}' for year, month in zip(tab4_df_grouped['Year'], tab4_df_grouped['Month'])]
+
+    # Create the hovertemplate with only the month, year, and number of deaths
+    hovertemplate = 'Year: %{x}<br>Month: %{text}<br>Number of Deaths: %{y}'
+
+    # Get the viridis color scale
+    viridis_colors = colors.sequential.Viridis
+
+    # Create the line plot using Plotly
+    tab4_fig = go.Figure()
+    tab4_fig.add_trace(go.Scatter(x=x_ticks, y=tab4_df_grouped['Deaths'],
+                            mode='lines+markers', hovertemplate=hovertemplate,
+                            line={'color': viridis_colors[0]},
+                            text=tab4_df_grouped['Month']))  # Use the Month column for hover text
+
+    # Set the plot title and labels
+    tab4_fig.update_layout(
+        #title=f'Trend in Number of Deaths ({desired_id.capitalize()}-related) Over Time',
+        title=f'Trend in Number of Methane-related Deaths Over Time',
+        xaxis_title='Year',
+        yaxis_title='Number of Deaths'
+    )
+
+    tab4_fig.update_xaxes(
+        tickmode='array',
+        tickvals=[idx for idx, month in enumerate(tab4_df_grouped['Month']) if month == 'Jan.'],
+        ticktext=[str(int(year)) for year, month in zip(tab4_df_grouped['Year'], tab4_df_grouped['Month']) if month == 'Jan.'],
+        tickformat='.0f'
+    )
+
+    # Remove the trace name from the legend
+    tab4_fig.update_traces(name='')  
+
+    return tab4_fig 
+
 
 
 
